@@ -90,6 +90,34 @@ html.dark .code-copy-button.copied {
   --at-apply: 'op-100';
 }
 
+/* Search Widget Theme Adaptation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+:root {
+  --halo-search-widget-base-font-family: inherit;
+  --halo-search-widget-base-rounded: 0.5rem;
+  --halo-search-widget-primary-color: oklch(25% 0.005 298);
+  --halo-search-widget-muted-color: oklch(40% 0.005 298);
+  --halo-search-widget-content-color: oklch(25% 0.005 298);
+  --halo-search-widget-base-bg-color: oklch(96% 0.005 298);
+  --halo-search-widget-modal-bg-color: oklch(96% 0.005 298);
+  --halo-search-widget-modal-layer-color: oklch(25% 0.005 298 / 0.3);
+  --halo-search-widget-hit-bg-color: oklch(92% 0.005 298);
+  --halo-search-widget-divider-color: oklch(40% 0.005 298 / 0.15);
+  --halo-search-widget-kbd-border-color: oklch(40% 0.005 298 / 0.25);
+  --halo-search-widget-kbd-shadow: none;
+}
+html.dark {
+  --halo-search-widget-primary-color: oklch(92% 0.005 298);
+  --halo-search-widget-muted-color: oklch(77% 0.005 298);
+  --halo-search-widget-content-color: oklch(92% 0.005 298);
+  --halo-search-widget-base-bg-color: oklch(22% 0.005 298);
+  --halo-search-widget-modal-bg-color: oklch(22% 0.005 298);
+  --halo-search-widget-modal-layer-color: oklch(10% 0.005 298 / 0.7);
+  --halo-search-widget-hit-bg-color: oklch(18% 0.005 298);
+  --halo-search-widget-divider-color: oklch(77% 0.005 298 / 0.15);
+  --halo-search-widget-kbd-border-color: oklch(77% 0.005 298 / 0.25);
+  --halo-search-widget-kbd-shadow: none;
+}
+
 /* TOC Styles (matching original TOC.astro) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 #toc-mobile-text {
   --at-apply: 'ml-4 font-semibold 2xl:hidden';

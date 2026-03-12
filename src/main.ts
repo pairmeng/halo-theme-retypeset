@@ -92,6 +92,33 @@ function handleSystemChange(event: MediaQueryListEvent): void {
   }
 }
 
+// Scroll to top
+const SCROLL_THRESHOLD = 300;
+
+function updateScrollTopVisibility(): void {
+  const btn = document.getElementById('scroll-top-button');
+  if (!btn) return;
+  const show = window.scrollY > SCROLL_THRESHOLD;
+  btn.style.opacity = show ? '1' : '0';
+  btn.style.pointerEvents = show ? 'auto' : 'none';
+}
+
+function handleScrollTopClick(e: MouseEvent): void {
+  if (!(e.target instanceof Element)) return;
+  if (!e.target.closest('#scroll-top-button')) return;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Search button handler (opens SearchWidget from plugin)
+function handleSearchClick(e: MouseEvent): void {
+  if (!(e.target instanceof Element)) return;
+  if (!e.target.closest('#search-button')) return;
+  const win = window as unknown as Record<string, unknown>;
+  if (win.SearchWidget && typeof (win.SearchWidget as Record<string, unknown>).open === 'function') {
+    (win.SearchWidget as { open: () => void }).open();
+  }
+}
+
 // Back button handler (matches original BackButton.astro)
 function handleBackButtonClick(e: MouseEvent): void {
   if (!(e.target instanceof Element)) return;
@@ -219,6 +246,9 @@ function initOnce(): void {
 // Register global event listeners (once, survive body swap)
 document.addEventListener('click', handleThemeToggle);
 document.addEventListener('click', handleBackButtonClick);
+document.addEventListener('click', handleScrollTopClick);
+document.addEventListener('click', handleSearchClick);
+window.addEventListener('scroll', updateScrollTopVisibility, { passive: true });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemChange);
 
 // Initialize when DOM is ready
