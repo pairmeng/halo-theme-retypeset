@@ -171,29 +171,35 @@ a:target-current {
   --at-apply: '2xl:hidden';
 }
 
-/* Layout direction: left sidebar >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+/* Layout direction >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+/* Content wrapper margins: managed here instead of UnoCSS attributify to avoid specificity conflicts */
 @media (min-width: 1024px) {
-  /* Flip sidebar (header/navbar/footer) from right to left */
-  [data-layout="left"] .sidebar-column {
-    right: auto;
-    left: max(5rem, calc(50vw - 35rem));
+  /* Default (right sidebar): content on the left */
+  .content-wrapper {
+    margin-left: max(5.75rem, calc(50vw - 34.25rem));
+    margin-right: max(5.75rem, calc(50vw - 34.25rem));
   }
-  /* Flip button container from right to left */
-  [data-layout="left"] .layout-flip-buttons {
-    right: auto;
-    left: max(5rem, calc(50vw - 35rem));
-  }
-  /* Shift main content to the right to avoid left sidebar overlap */
+  /* Left sidebar: mirror content to the right */
   [data-layout="left"] .content-wrapper {
     margin-left: max(5.75rem, calc(50vw - 9.75rem));
     margin-right: max(5.75rem, calc(50vw - 34.25rem));
+  }
+  /* Flip sidebar (header/navbar/footer) from right to left */
+  [data-layout="left"] .sidebar-column {
+    right: auto !important;
+    left: max(5rem, calc(50vw - 35rem)) !important;
+  }
+  /* Flip button container from right to left */
+  [data-layout="left"] .layout-flip-buttons {
+    right: auto !important;
+    left: max(5rem, calc(50vw - 35rem)) !important;
   }
 }
 @media (min-width: 1536px) {
   /* Flip TOC from left to right */
   [data-layout="left"] #toc-container {
-    left: auto;
-    right: 0;
+    left: auto !important;
+    right: 0 !important;
   }
 }
 
