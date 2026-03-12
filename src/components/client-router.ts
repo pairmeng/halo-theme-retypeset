@@ -253,7 +253,25 @@ function syncHtmlElement(newDoc: Document): void {
 function swapContent(newDoc: Document): void {
   syncHtmlElement(newDoc);
   mergeHead(newDoc);
+
+  // Preserve plugin-injected custom elements (e.g. <search-modal>)
+  // before body swap — they are direct body children with hyphenated
+  // tag names (Web Components created at runtime by Halo plugins).
+  const preserved: Element[] = [];
+  for (const el of Array.from(document.body.children)) {
+    if (el.tagName.includes('-')) {
+      preserved.push(el);
+      el.remove();
+    }
+  }
+
   document.body.replaceWith(document.adoptNode(newDoc.body));
+
+  // Re-append preserved plugin elements to the new body
+  for (const el of preserved) {
+    document.body.appendChild(el);
+  }
+
   activateBodyScripts();
 }
 
