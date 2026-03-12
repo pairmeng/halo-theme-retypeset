@@ -183,6 +183,11 @@ a:target-current {
     right: auto;
     left: max(5rem, calc(50vw - 35rem));
   }
+  /* Shift main content to the right to avoid left sidebar overlap */
+  [data-layout="left"] .content-wrapper {
+    margin-left: max(5.75rem, calc(50vw - 9.75rem));
+    margin-right: max(5.75rem, calc(50vw - 34.25rem));
+  }
 }
 @media (min-width: 1536px) {
   /* Flip TOC from left to right */
