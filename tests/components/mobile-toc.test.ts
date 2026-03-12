@@ -216,7 +216,7 @@ describe('Mobile Sidebar TOC', () => {
     it('should create IntersectionObserver for ribbon visibility', () => {
       buildPostDOM();
       reinitMobileToc();
-      // First observer: ribbon visibility (observes toc-container)
+      // First observer: ribbon visibility (observes post-date in jsdom since offsetParent is null)
       expect(mockObserverInstances.length).toBeGreaterThanOrEqual(1);
       expect(mockObserverInstances[0].observedElements.size).toBe(1);
     });
@@ -229,11 +229,20 @@ describe('Mobile Sidebar TOC', () => {
       expect(mockObserverInstances[1].observedElements.size).toBe(4);
     });
 
-    it('should fallback to post-date when toc-container is absent', () => {
-      buildPostDOM({ includeTocContainer: false });
+    it('should fallback to post-date when toc-container is hidden or absent', () => {
+      // In jsdom offsetParent is always null, so toc-container is treated as hidden
+      buildPostDOM();
       reinitMobileToc();
       const postDate = document.getElementById('post-date');
       expect(mockObserverInstances[0].observedElements.has(postDate!)).toBe(true);
+
+      // Also works when toc-container is completely absent
+      document.body.innerHTML = '';
+      mockObserverInstances = [];
+      buildPostDOM({ includeTocContainer: false });
+      reinitMobileToc();
+      const postDate2 = document.getElementById('post-date');
+      expect(mockObserverInstances[0].observedElements.has(postDate2!)).toBe(true);
     });
 
     it('should not create ribbon observer when ribbon element is absent', () => {

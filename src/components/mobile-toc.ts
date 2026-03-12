@@ -42,8 +42,9 @@ function setupRibbonVisibility(): void {
     ribbonObserver = null;
   }
 
-  // If no inline TOC exists (no headings), show ribbon after scrolling past title
-  const observeTarget = inlineToc ?? document.getElementById('post-date');
+  // If inline TOC is hidden (display:none in sidebar mode) or absent, observe post-date instead
+  const isTocVisible = inlineToc !== null && inlineToc.offsetParent !== null;
+  const observeTarget = isTocVisible ? inlineToc : document.getElementById('post-date');
   if (!observeTarget) return;
 
   ribbonObserver = new IntersectionObserver(
