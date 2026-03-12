@@ -47,6 +47,18 @@ spec:
             - label: Logo 图片
               value: image
 
+        - $formkit: select
+          name: toc_desktop_mode
+          label: 桌面端目录模式
+          value: collapsible
+          options:
+            - label: 常显
+              value: always
+            - label: 收缩（默认展开，点击收缩）
+              value: collapsible
+            - label: 关闭
+              value: off
+
         - $formkit: text
           name: icp_number
           label: ICP 备案号

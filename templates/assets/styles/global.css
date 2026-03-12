@@ -157,3 +157,16 @@ a:target-current {
 #toc-toggle:checked ~ #toc-accordion-wrapper {
   --at-apply: '2xl:rows-[0fr]';
 }
+
+/* TOC desktop mode: off (hidden on desktop, visible on mobile) */
+.toc-desktop-off {
+  --at-apply: '2xl:hidden';
+}
+
+/* TOC desktop mode: always (always expanded, no toggle header on desktop) */
+.toc-desktop-always #toc-accordion-wrapper {
+  --at-apply: 'rows-[0fr] 2xl:rows-[1fr]';
+}
+.toc-desktop-always .toc-no-toggle {
+  --at-apply: '2xl:hidden';
+}

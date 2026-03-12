@@ -37,35 +37,46 @@
       </div>
 
       <!-- TOC (CSS-only accordion matching original TOC.astro) -->
-      <div
-        id="toc-container"
-        class="mb-6 uno-round-border bg-secondary/5 2xl:fixed 2xl:left-0 2xl:top-44.5 2xl:max-w-[min(calc(50vw-38rem),13rem)] 2xl:border-none 2xl:bg-secondary/0"
-        data-toc-pending
-      >
-        <input type="checkbox" id="toc-toggle" hidden />
-        <div class="relative h-12 w-full">
-          <label
-            for="toc-toggle"
-            class="absolute inset-0 flex cursor-pointer items-center 2xl:static 2xl:flex 2xl:c-secondary/60 2xl:transition-colors 2xl:ease-out 2xl:hover:c-primary"
-          >
-            <span id="toc-mobile-text" th:text="${t_toc}">TOC</span>
-            <svg
-              id="toc-desktop-icon"
-              aria-hidden="true"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              class="ml-4 hidden aspect-square w-4.2 2xl:mt-4 2xl:block 2xl:origin-center 2xl:active:scale-90!"
+      <th:block th:with="tocDesktopMode=${theme.config.general.toc_desktop_mode ?: 'collapsible'}">
+        <div
+          id="toc-container"
+          th:classappend="${tocDesktopMode == 'off' ? 'toc-desktop-off' : (tocDesktopMode == 'always' ? 'toc-desktop-always' : '')}"
+          class="mb-6 uno-round-border bg-secondary/5 2xl:fixed 2xl:left-0 2xl:top-44.5 2xl:max-w-[min(calc(50vw-38rem),13rem)] 2xl:border-none 2xl:bg-secondary/0"
+          data-toc-pending
+        >
+          <!-- Collapsible mode: checkbox toggle -->
+          <th:block th:if="${tocDesktopMode == 'collapsible'}">
+            <input type="checkbox" id="toc-toggle" hidden />
+          </th:block>
+
+          <!-- Mobile header (always shown on mobile) + Desktop toggle icon (collapsible only) -->
+          <div class="relative h-12 w-full" th:classappend="${tocDesktopMode != 'collapsible' ? 'toc-no-toggle' : ''}">
+            <label
+              th:for="${tocDesktopMode == 'collapsible' ? 'toc-toggle' : ''}"
+              th:classappend="${tocDesktopMode != 'collapsible' ? '2xl:pointer-events-none' : ''}"
+              class="absolute inset-0 flex cursor-pointer items-center 2xl:static 2xl:flex 2xl:c-secondary/60 2xl:transition-colors 2xl:ease-out 2xl:hover:c-primary"
             >
-              <path d="M3 4H21V6H3V4ZM3 11H15V13H3V11ZM3 18H21V20H3V18Z" />
-            </svg>
-          </label>
+              <span id="toc-mobile-text" th:text="${t_toc}">TOC</span>
+              <svg
+                th:if="${tocDesktopMode == 'collapsible'}"
+                id="toc-desktop-icon"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                class="ml-4 hidden aspect-square w-4.2 2xl:mt-4 2xl:block 2xl:origin-center 2xl:active:scale-90!"
+              >
+                <path d="M3 4H21V6H3V4ZM3 11H15V13H3V11ZM3 18H21V20H3V18Z" />
+              </svg>
+            </label>
+          </div>
+
+          <div id="toc-accordion-wrapper">
+            <nav id="toc-accordion-content" th:aria-label="${t_toc}">
+              <ul id="toc-links-list"></ul>
+            </nav>
+          </div>
         </div>
-        <div id="toc-accordion-wrapper">
-          <nav id="toc-accordion-content" th:aria-label="${t_toc}">
-            <ul id="toc-links-list"></ul>
-          </nav>
-        </div>
-      </div>
+      </th:block>
 
       <!-- Content -->
       <div id="post-content">
