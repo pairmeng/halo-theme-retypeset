@@ -5,7 +5,6 @@
 
 // ── State ──────────────────────────────────────────────────────────
 
-let ribbonObserver: IntersectionObserver | null = null;
 let headingObserver: IntersectionObserver | null = null;
 let currentActiveId = '';
 let isOverlayOpen = false;
@@ -25,47 +24,12 @@ function getOverlayLinks(): HTMLElement | null {
   return document.getElementById('toc-overlay-links');
 }
 
-function getInlineToc(): HTMLElement | null {
-  return document.getElementById('toc-container');
-}
+// ── Ribbon visibility (always shown on post pages) ──────────────────
 
-// ── Ribbon visibility (IntersectionObserver on inline TOC) ─────────
-
-function setupRibbonVisibility(): void {
+function showRibbon(): void {
   const ribbon = getRibbon();
-  const inlineToc = getInlineToc();
   if (!ribbon) return;
-
-  // Cleanup previous observer
-  if (ribbonObserver) {
-    ribbonObserver.disconnect();
-    ribbonObserver = null;
-  }
-
-  // If inline TOC is hidden (display:none in sidebar mode) or absent, observe post-date instead
-  const isTocVisible = inlineToc !== null && inlineToc.offsetParent !== null;
-  const observeTarget = isTocVisible ? inlineToc : document.getElementById('post-date');
-  if (!observeTarget) return;
-
-  ribbonObserver = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          ribbon.classList.remove('visible');
-        } else {
-          // Only show when target is above viewport (scrolled past)
-          if (entry.boundingClientRect.bottom < 0) {
-            ribbon.classList.add('visible');
-          } else {
-            ribbon.classList.remove('visible');
-          }
-        }
-      }
-    },
-    { threshold: 0 }
-  );
-
-  ribbonObserver.observe(observeTarget);
+  ribbon.classList.add('visible');
 }
 
 // ── Heading tracking (current chapter highlight) ───────────────────
@@ -128,10 +92,7 @@ function openOverlay(): void {
   // Highlight current chapter
   highlightCurrentEntry();
 
-  // Show overlay with animation
-  overlay.removeAttribute('hidden');
-  // Force reflow before adding .open class
-  void overlay.offsetHeight;
+  // Show overlay with slide-in animation
   overlay.classList.add('open');
 
   // Hide ribbon
@@ -154,11 +115,10 @@ function closeOverlay(skipHistoryBack = false): void {
   overlay.classList.remove('open');
   overlay.classList.add('closing');
 
-  // After slide-out animation completes, hide overlay
+  // After slide-out animation completes, remove closing class
   const contentPanel = overlay.querySelector('.toc-overlay-content');
   const finishClose = (): void => {
     overlay.classList.remove('closing');
-    overlay.setAttribute('hidden', '');
   };
   if (contentPanel) {
     contentPanel.addEventListener('transitionend', finishClose, { once: true });
@@ -171,7 +131,9 @@ function closeOverlay(skipHistoryBack = false): void {
     }
   }, 400);
 
-  // Restore background scroll
+  // Restore ribbon and background scroll
+  const ribbon = getRibbon();
+  if (ribbon) ribbon.classList.add('visible');
   document.body.style.overflow = '';
 
   // Pop the history state we pushed
@@ -261,7 +223,7 @@ export function reinitMobileToc(): void {
   currentActiveId = '';
   document.body.style.overflow = '';
 
-  // Setup observers for the new page content
-  setupRibbonVisibility();
+  // Setup ribbon and heading observer for the new page content
+  showRibbon();
   setupHeadingTracking();
 }

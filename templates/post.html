@@ -80,7 +80,7 @@
       <th:block th:with="tocMobileMode=${theme.config.general.toc_mobile_mode ?: 'accordion'}">
         <th:block th:if="${tocMobileMode == 'sidebar'}">
           <div id="toc-ribbon" class="toc-ribbon" role="button" tabindex="0" th:aria-label="${t_toc}" th:text="${t_toc}"></div>
-          <div id="toc-overlay" class="toc-overlay" hidden>
+          <div id="toc-overlay" class="toc-overlay">
             <div class="toc-overlay-backdrop"></div>
             <div class="toc-overlay-content">
               <h2 class="toc-overlay-title" th:text="${t_toc}">目录</h2>

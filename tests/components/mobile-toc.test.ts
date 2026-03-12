@@ -57,7 +57,6 @@ function buildPostDOM(options: {
     const overlay = document.createElement('div');
     overlay.id = 'toc-overlay';
     overlay.className = 'toc-overlay';
-    overlay.setAttribute('hidden', '');
     overlay.innerHTML = `
       <div class="toc-overlay-backdrop"></div>
       <div class="toc-overlay-content">
@@ -213,55 +212,34 @@ describe('Mobile Sidebar TOC', () => {
       expect(document.body.style.overflow).toBe('');
     });
 
-    it('should create IntersectionObserver for ribbon visibility', () => {
+    it('should immediately show ribbon', () => {
       buildPostDOM();
       reinitMobileToc();
-      // First observer: ribbon visibility (observes post-date in jsdom since offsetParent is null)
-      expect(mockObserverInstances.length).toBeGreaterThanOrEqual(1);
-      expect(mockObserverInstances[0].observedElements.size).toBe(1);
+      const ribbon = getRibbon()!;
+      expect(ribbon.classList.contains('visible')).toBe(true);
     });
 
     it('should create IntersectionObserver for heading tracking', () => {
       buildPostDOM();
       reinitMobileToc();
-      // Second observer: heading tracking (observes h2, h3, h4)
-      expect(mockObserverInstances.length).toBe(2);
-      expect(mockObserverInstances[1].observedElements.size).toBe(4);
-    });
-
-    it('should fallback to post-date when toc-container is hidden or absent', () => {
-      // In jsdom offsetParent is always null, so toc-container is treated as hidden
-      buildPostDOM();
-      reinitMobileToc();
-      const postDate = document.getElementById('post-date');
-      expect(mockObserverInstances[0].observedElements.has(postDate!)).toBe(true);
-
-      // Also works when toc-container is completely absent
-      document.body.innerHTML = '';
-      mockObserverInstances = [];
-      buildPostDOM({ includeTocContainer: false });
-      reinitMobileToc();
-      const postDate2 = document.getElementById('post-date');
-      expect(mockObserverInstances[0].observedElements.has(postDate2!)).toBe(true);
-    });
-
-    it('should not create ribbon observer when ribbon element is absent', () => {
-      buildPostDOM({ includeRibbon: false });
-      reinitMobileToc();
-      // Only heading observer should be created (no ribbon → no ribbon observer)
+      // Only heading observer (no ribbon observer)
       expect(mockObserverInstances.length).toBe(1);
+      expect(mockObserverInstances[0].observedElements.size).toBe(4);
     });
 
-    it('should disconnect previous observers on re-init', () => {
+    it('should not create heading observer when no headings', () => {
+      buildPostDOM({ headings: [] });
+      reinitMobileToc();
+      expect(mockObserverInstances.length).toBe(0);
+    });
+
+    it('should disconnect previous heading observer on re-init', () => {
       buildPostDOM();
       reinitMobileToc();
-      const firstRibbonObs = mockObserverInstances[0];
-      const firstHeadingObs = mockObserverInstances[1];
-      const ribbonDisconnectSpy = vi.spyOn(firstRibbonObs, 'disconnect');
+      const firstHeadingObs = mockObserverInstances[0];
       const headingDisconnectSpy = vi.spyOn(firstHeadingObs, 'disconnect');
 
       reinitMobileToc();
-      expect(ribbonDisconnectSpy).toHaveBeenCalled();
       expect(headingDisconnectSpy).toHaveBeenCalled();
     });
   });
@@ -269,58 +247,26 @@ describe('Mobile Sidebar TOC', () => {
   // ── Ribbon visibility ────────────────────────────────────────────
 
   describe('Ribbon visibility', () => {
-    it('should show ribbon when inline TOC scrolled above viewport', () => {
+    it('should always be visible after reinit', () => {
       buildPostDOM();
-      initMobileToc();
       reinitMobileToc();
-
-      const ribbon = getRibbon()!;
-      expect(ribbon.classList.contains('visible')).toBe(false);
-
-      // Simulate: toc-container not intersecting, bottom < 0 (scrolled past)
-      triggerIntersection(0, [{
-        isIntersecting: false,
-        boundingClientRect: { bottom: -100 } as DOMRectReadOnly,
-      }]);
-
-      expect(ribbon.classList.contains('visible')).toBe(true);
+      expect(getRibbon()!.classList.contains('visible')).toBe(true);
     });
 
-    it('should hide ribbon when inline TOC is in viewport', () => {
+    it('should hide when overlay opens and restore when overlay closes', () => {
       buildPostDOM();
-      initMobileToc();
       reinitMobileToc();
 
       const ribbon = getRibbon()!;
-
-      // Show it first
-      triggerIntersection(0, [{
-        isIntersecting: false,
-        boundingClientRect: { bottom: -100 } as DOMRectReadOnly,
-      }]);
       expect(ribbon.classList.contains('visible')).toBe(true);
 
-      // Then TOC scrolls back into view
-      triggerIntersection(0, [{
-        isIntersecting: true,
-        boundingClientRect: { bottom: 300 } as DOMRectReadOnly,
-      }]);
+      clickElement(ribbon);
       expect(ribbon.classList.contains('visible')).toBe(false);
-    });
 
-    it('should not show ribbon when target is below viewport (page top)', () => {
-      buildPostDOM();
-      initMobileToc();
-      reinitMobileToc();
-
-      const ribbon = getRibbon()!;
-
-      // Not intersecting but bottom > 0 means it's below viewport
-      triggerIntersection(0, [{
-        isIntersecting: false,
-        boundingClientRect: { bottom: 500 } as DOMRectReadOnly,
-      }]);
-      expect(ribbon.classList.contains('visible')).toBe(false);
+      // Close overlay
+      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
+      clickElement(backdrop);
+      expect(ribbon.classList.contains('visible')).toBe(true);
     });
   });
 
@@ -336,7 +282,6 @@ describe('Mobile Sidebar TOC', () => {
       clickElement(ribbon);
 
       const overlay = getOverlay()!;
-      expect(overlay.hasAttribute('hidden')).toBe(false);
       expect(overlay.classList.contains('open')).toBe(true);
     });
 
@@ -349,7 +294,6 @@ describe('Mobile Sidebar TOC', () => {
       pressKey(ribbon, 'Enter');
 
       const overlay = getOverlay()!;
-      expect(overlay.hasAttribute('hidden')).toBe(false);
       expect(overlay.classList.contains('open')).toBe(true);
     });
 
@@ -374,7 +318,7 @@ describe('Mobile Sidebar TOC', () => {
       pressKey(ribbon, 'Tab');
 
       const overlay = getOverlay()!;
-      expect(overlay.hasAttribute('hidden')).toBe(true);
+      expect(overlay.classList.contains('open')).toBe(false);
     });
 
     it('should prevent background scroll when opened', () => {
@@ -490,7 +434,6 @@ describe('Mobile Sidebar TOC', () => {
       const contentPanel = overlay.querySelector('.toc-overlay-content')!;
       contentPanel.dispatchEvent(new Event('transitionend', { bubbles: false }));
       expect(overlay.classList.contains('closing')).toBe(false);
-      expect(overlay.hasAttribute('hidden')).toBe(true);
     });
 
     it('should fallback-hide after timeout if transitionend does not fire', () => {
@@ -508,7 +451,6 @@ describe('Mobile Sidebar TOC', () => {
       // Fast-forward 400ms (fallback timeout)
       vi.advanceTimersByTime(400);
       expect(overlay.classList.contains('closing')).toBe(false);
-      expect(overlay.hasAttribute('hidden')).toBe(true);
 
       vi.useRealTimers();
     });
@@ -574,7 +516,7 @@ describe('Mobile Sidebar TOC', () => {
       const h2 = document.getElementById('chapter-2')!;
 
       // Simulate heading entering viewport
-      triggerIntersection(1, [{
+      triggerIntersection(0, [{
         isIntersecting: true,
         target: h2,
       }]);
@@ -596,7 +538,7 @@ describe('Mobile Sidebar TOC', () => {
       const h2Ch2 = document.getElementById('chapter-2')!;
 
       // First heading active
-      triggerIntersection(1, [{
+      triggerIntersection(0, [{
         isIntersecting: true,
         target: h2Intro,
       }]);
@@ -612,7 +554,7 @@ describe('Mobile Sidebar TOC', () => {
       getOverlay()!.querySelector('.toc-overlay-content')!.dispatchEvent(new Event('transitionend', { bubbles: false }));
 
       // Second heading becomes active
-      triggerIntersection(1, [{
+      triggerIntersection(0, [{
         isIntersecting: true,
         target: h2Ch2,
       }]);
@@ -629,7 +571,7 @@ describe('Mobile Sidebar TOC', () => {
       reinitMobileToc();
 
       const h2 = document.getElementById('chapter-2')!;
-      triggerIntersection(1, [{
+      triggerIntersection(0, [{
         isIntersecting: true,
         target: h2,
       }]);
@@ -651,8 +593,8 @@ describe('Mobile Sidebar TOC', () => {
       buildPostDOM({ headings: [] });
 
       expect(() => reinitMobileToc()).not.toThrow();
-      // Only ribbon observer should exist (no heading observer)
-      expect(mockObserverInstances.length).toBe(1);
+      // No observers created (ribbon is class-based, no headings to track)
+      expect(mockObserverInstances.length).toBe(0);
     });
 
     it('should handle missing overlay element gracefully', () => {
