@@ -486,8 +486,9 @@ describe('Mobile Sidebar TOC', () => {
       expect(overlay.classList.contains('closing')).toBe(true);
       expect(overlay.classList.contains('open')).toBe(false);
 
-      // Simulate transitionend
-      overlay.dispatchEvent(new Event('transitionend'));
+      // Simulate transitionend on content panel (slide animation target)
+      const contentPanel = overlay.querySelector('.toc-overlay-content')!;
+      contentPanel.dispatchEvent(new Event('transitionend', { bubbles: false }));
       expect(overlay.classList.contains('closing')).toBe(false);
       expect(overlay.hasAttribute('hidden')).toBe(true);
     });
@@ -608,7 +609,7 @@ describe('Mobile Sidebar TOC', () => {
       // Close and change heading
       const backdrop = document.querySelector('.toc-overlay-backdrop')!;
       clickElement(backdrop);
-      getOverlay()!.dispatchEvent(new Event('transitionend'));
+      getOverlay()!.querySelector('.toc-overlay-content')!.dispatchEvent(new Event('transitionend', { bubbles: false }));
 
       // Second heading becomes active
       triggerIntersection(1, [{

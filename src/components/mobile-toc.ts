@@ -154,19 +154,20 @@ function closeOverlay(skipHistoryBack = false): void {
   overlay.classList.remove('open');
   overlay.classList.add('closing');
 
-  // After animation completes, hide overlay
-  const onTransitionEnd = (): void => {
+  // After slide-out animation completes, hide overlay
+  const contentPanel = overlay.querySelector('.toc-overlay-content');
+  const finishClose = (): void => {
     overlay.classList.remove('closing');
     overlay.setAttribute('hidden', '');
-    overlay.removeEventListener('transitionend', onTransitionEnd);
   };
-  overlay.addEventListener('transitionend', onTransitionEnd, { once: true });
+  if (contentPanel) {
+    contentPanel.addEventListener('transitionend', finishClose, { once: true });
+  }
 
   // Fallback timeout in case transitionend doesn't fire
   setTimeout(() => {
     if (overlay.classList.contains('closing')) {
-      overlay.classList.remove('closing');
-      overlay.setAttribute('hidden', '');
+      finishClose();
     }
   }, 400);
 

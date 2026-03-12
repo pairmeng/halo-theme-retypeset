@@ -46,7 +46,7 @@
         >
           <!-- Collapsible mode: checkbox toggle -->
           <th:block th:if="${tocDesktopMode == 'collapsible'}">
-            <input type="checkbox" id="toc-toggle" hidden />
+            <input type="checkbox" id="toc-toggle" class="toc-toggle-input" />
           </th:block>
 
           <!-- Mobile header (always shown on mobile) + Desktop toggle icon (collapsible only) -->
@@ -81,7 +81,7 @@
       <!-- Mobile sidebar TOC: ribbon trigger + overlay -->
       <th:block th:with="tocMobileMode=${theme.config.general.toc_mobile_mode ?: 'accordion'}">
         <th:block th:if="${tocMobileMode == 'sidebar'}">
-          <div id="toc-ribbon" class="toc-ribbon" role="button" tabindex="0" th:aria-label="${t_toc}"></div>
+          <div id="toc-ribbon" class="toc-ribbon" role="button" tabindex="0" th:aria-label="${t_toc}" th:text="${t_toc}"></div>
           <div id="toc-overlay" class="toc-overlay" hidden>
             <div class="toc-overlay-backdrop"></div>
             <div class="toc-overlay-content">

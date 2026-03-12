@@ -119,6 +119,13 @@ html.dark {
 }
 
 /* TOC Styles (matching original TOC.astro) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.toc-toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
 #toc-mobile-text {
   --at-apply: 'ml-4 font-semibold 2xl:hidden';
 }
@@ -228,25 +235,30 @@ a:target-current {
 .toc-ribbon {
   position: fixed;
   right: 0;
-  top: 55%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 40px;
-  border-radius: 1px 0 0 1px;
+  top: 50%;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 0.6em 0.15em 0.6em 0.2em;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  border-radius: 0.25rem 0 0 0.25rem;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease-out, background-color 0.15s ease-out;
+  transform: translateY(-50%) translateX(100%);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out, color 0.15s ease-out;
   z-index: 50;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  --at-apply: 'bg-primary/20';
+  --at-apply: 'c-secondary/40 bg-secondary/6';
 }
 .toc-ribbon.visible {
   opacity: 1;
   pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
 }
 .toc-ribbon:active {
-  --at-apply: 'bg-primary/60';
+  --at-apply: 'c-primary/80';
 }
 @media (min-width: 1536px) {
   .toc-ribbon {
@@ -254,16 +266,13 @@ a:target-current {
   }
 }
 
-/* Mobile TOC: overlay (full-screen "table of contents page") >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+/* Mobile TOC: overlay (right-side drawer) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 .toc-overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: none;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  justify-content: flex-end;
 }
 .toc-overlay.open,
 .toc-overlay.closing {
@@ -274,47 +283,48 @@ a:target-current {
   position: fixed;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-  --at-apply: 'bg-background/95';
+  transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  --at-apply: 'bg-secondary/10';
 }
 html.dark .toc-overlay-backdrop {
-  --at-apply: 'bg-background/97';
+  --at-apply: 'bg-background/50';
 }
 .toc-overlay.open .toc-overlay-backdrop {
   opacity: 1;
 }
 .toc-overlay.closing .toc-overlay-backdrop {
   opacity: 0;
-  transition-duration: 0.25s;
+  transition-duration: 0.2s;
 }
 
 .toc-overlay-content {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 44rem;
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0.1s,
-              transform 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0.1s;
-  --at-apply: 'py-20 px-[min(7.25vw,3.731rem)]';
+  width: 61vw;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: -4px 0 24px oklch(0% 0 0 / 0.06);
+  --at-apply: 'pt-14 pb-10 px-5 bg-background';
+}
+html.dark .toc-overlay-content {
+  box-shadow: -4px 0 24px oklch(0% 0 0 / 0.25);
 }
 .toc-overlay.open .toc-overlay-content {
-  opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 .toc-overlay.closing .toc-overlay-content {
-  opacity: 0;
-  transform: translateY(-4px);
-  transition-delay: 0s;
-  transition-duration: 0.2s;
+  transform: translateX(100%);
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 }
 
 .toc-overlay-title {
-  text-align: center;
-  letter-spacing: 0.5em;
-  margin-bottom: 2.5rem;
-  --at-apply: 'text-lg c-secondary/60 font-normal';
+  letter-spacing: 0.3em;
+  margin-bottom: 1.5rem;
+  --at-apply: 'text-xs c-secondary/50 font-normal';
 }
 
 #toc-overlay-links {
@@ -332,15 +342,18 @@ html.dark .toc-overlay-backdrop {
 #toc-overlay-links a {
   display: block;
   text-decoration: none;
-  line-height: 2.4;
+  line-height: 2.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: color 0.15s ease-out;
-  --at-apply: 'c-secondary/70 pl-4';
+  --at-apply: 'text-sm c-secondary/70 pl-3';
 }
 #toc-overlay-links a[data-depth="3"] {
-  --at-apply: 'pl-8';
+  --at-apply: 'pl-6';
 }
 #toc-overlay-links a[data-depth="4"] {
-  --at-apply: 'pl-12';
+  --at-apply: 'pl-9';
 }
 #toc-overlay-links a:hover {
   --at-apply: 'c-primary';
@@ -364,4 +377,9 @@ html.dark .toc-overlay-backdrop {
   margin-right: 0;
   opacity: 1;
   pointer-events: auto;
+}
+@media (max-width: 1023px) {
+  #scroll-top-button {
+    display: none;
+  }
 }
