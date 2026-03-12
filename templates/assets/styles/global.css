@@ -396,8 +396,12 @@ html.dark .toc-overlay.open {
 
 /* Tag flow typography >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 .tag-flow {
+  overflow: hidden;
   line-height: 2.4;
-  text-align: justify;
+}
+.tag-flow-inner {
+  display: block;
+  margin-left: -1em;
 }
 .tag-flow a {
   white-space: nowrap;
@@ -405,19 +409,30 @@ html.dark .toc-overlay.open {
   transition: color 0.2s ease-out;
   --at-apply: 'c-secondary/60';
 }
+.tag-flow a::before {
+  content: '·';
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  --at-apply: 'c-secondary/20';
+}
 .tag-flow a:hover {
   text-decoration: underline;
   text-underline-offset: 0.25em;
   --at-apply: 'c-primary';
 }
-.tag-flow .tag-sep {
-  margin: 0 0.15em;
+.tag-flow a:hover::before {
+  text-decoration: none;
   --at-apply: 'c-secondary/20';
 }
 .tag-flow a.tag-active {
   text-decoration: underline;
   text-underline-offset: 0.25em;
   --at-apply: 'c-primary font-semibold';
+}
+.tag-flow a.tag-active::before {
+  text-decoration: none;
+  --at-apply: 'c-secondary/20';
 }
 
 /* Category list >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */

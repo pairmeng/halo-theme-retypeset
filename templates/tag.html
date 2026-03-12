@@ -6,14 +6,14 @@
   <th:block th:fragment="content">
     <!-- All Tags (current tag highlighted) -->
     <div class="no-heti tag-flow mb-8">
-      <th:block th:each="t, iter : ${tags}">
+      <span class="tag-flow-inner">
         <a
+          th:each="t : ${tags}"
           th:href="@{${t.status.permalink}}"
           th:text="${t.spec.displayName}"
           th:classappend="${t.spec.displayName == tag.spec.displayName ? 'tag-active' : ''}"
         ></a>
-        <span th:if="${!iter.last}" class="tag-sep">·</span>
-      </th:block>
+      </span>
     </div>
 
     <!-- Decorative Line -->
