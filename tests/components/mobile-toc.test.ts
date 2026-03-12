@@ -632,8 +632,7 @@ describe('Mobile Sidebar TOC', () => {
   // ── TOC link navigation ──────────────────────────────────────────
 
   describe('TOC link navigation', () => {
-    it('should scroll to target heading when TOC link is clicked', () => {
-      vi.useFakeTimers();
+    it('should scroll to target heading instantly when TOC link is clicked', () => {
       buildPostDOM();
       reinitMobileToc();
 
@@ -645,14 +644,11 @@ describe('Mobile Sidebar TOC', () => {
       const link = getOverlayLinks()!.querySelector('a[href="#chapter-2"]')!;
       clickElement(link);
 
-      // After 50ms delay, scrollIntoView should be called on target
-      vi.advanceTimersByTime(50);
+      // Instant scroll behind frosted glass (no delay)
       expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
-        behavior: 'smooth',
+        behavior: 'instant',
         block: 'start',
       });
-
-      vi.useRealTimers();
     });
 
     it('should close overlay after link click', () => {

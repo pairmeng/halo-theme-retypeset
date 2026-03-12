@@ -167,21 +167,20 @@ function handleOverlayClick(e: MouseEvent): void {
   // Ignore clicks outside the overlay (e.g. ribbon click that just opened it)
   if (!e.target.closest('#toc-overlay')) return;
 
-  // Click on a TOC link → navigate + close
+  // Click on a TOC link → scroll behind frosted glass, then fade out
   const link = e.target.closest<HTMLAnchorElement>('#toc-overlay-links a');
   if (link) {
     e.preventDefault();
     const targetId = link.getAttribute('href')?.slice(1);
-    closeOverlay();
     if (targetId) {
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
-        // Small delay to let overlay close animation start
-        setTimeout(() => {
-          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 50);
+        // Instant scroll while overlay still covers the page (invisible to user)
+        targetEl.scrollIntoView({ behavior: 'instant', block: 'start' });
       }
     }
+    // Then fade out overlay — page is already at the right position
+    closeOverlay();
     return;
   }
 
