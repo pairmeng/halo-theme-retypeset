@@ -29,6 +29,11 @@ function getOverlayLinks(): HTMLElement | null {
 function showRibbon(): void {
   const ribbon = getRibbon();
   if (!ribbon) return;
+
+  // Only show ribbon when overlay TOC has content
+  const overlayLinks = document.getElementById('toc-overlay-links');
+  if (!overlayLinks || overlayLinks.children.length === 0) return;
+
   ribbon.classList.add('visible');
 }
 
