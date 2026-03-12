@@ -632,23 +632,29 @@ describe('Mobile Sidebar TOC', () => {
   // ── TOC link navigation ──────────────────────────────────────────
 
   describe('TOC link navigation', () => {
-    it('should scroll to target heading instantly when TOC link is clicked', () => {
+    it('should smooth-scroll to target heading after 150ms delay', () => {
+      vi.useFakeTimers();
       buildPostDOM();
       reinitMobileToc();
 
       clickElement(getRibbon()!);
 
-      // Reset the shared mock to isolate the scroll call from highlight's scrollIntoView
       vi.mocked(Element.prototype.scrollIntoView).mockClear();
 
       const link = getOverlayLinks()!.querySelector('a[href="#chapter-2"]')!;
       clickElement(link);
 
-      // Instant scroll behind frosted glass (no delay)
+      // No scroll yet — overlay is fading out
+      expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+
+      // After 150ms (overlay nearly transparent), smooth scroll starts
+      vi.advanceTimersByTime(150);
       expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
-        behavior: 'instant',
+        behavior: 'smooth',
         block: 'start',
       });
+
+      vi.useRealTimers();
     });
 
     it('should close overlay after link click', () => {

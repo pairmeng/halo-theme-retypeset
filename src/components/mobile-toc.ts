@@ -29,6 +29,11 @@ function getOverlayLinks(): HTMLElement | null {
 function showRibbon(): void {
   const ribbon = getRibbon();
   if (!ribbon) return;
+
+  // Only show ribbon when overlay TOC has content
+  const overlayLinks = document.getElementById('toc-overlay-links');
+  if (!overlayLinks || overlayLinks.children.length === 0) return;
+
   ribbon.classList.add('visible');
 }
 
@@ -167,23 +172,23 @@ function handleOverlayClick(e: MouseEvent): void {
   // Ignore clicks outside the overlay (e.g. ribbon click that just opened it)
   if (!e.target.closest('#toc-overlay')) return;
 
-  // Click on a TOC link → scroll behind frosted glass, then fade out
+  // Click on a TOC link → fade overlay, then visible smooth scroll
   const link = e.target.closest<HTMLAnchorElement>('#toc-overlay-links a');
   if (link) {
     e.preventDefault();
     const targetId = link.getAttribute('href')?.slice(1);
-    if (targetId) {
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        // Instant scroll while overlay still covers the page (invisible to user)
-        targetEl.scrollIntoView({ behavior: 'instant', block: 'start' });
-      }
-    }
-    // Close overlay without history.back() to avoid browser scroll restoration
+    const targetEl = targetId ? document.getElementById(targetId) : null;
+
+    // Start overlay fade-out first (page stays in place)
     closeOverlay(true);
-    // Clean up history state without triggering popstate
-    if (history.state?.tocOverlay) {
-      history.replaceState({}, '');
+    if (history.state?.tocOverlay) history.replaceState({}, '');
+
+    // Near end of fade-out (~150ms of 200ms), start smooth scroll
+    // User sees the page begin to move as overlay becomes nearly transparent
+    if (targetEl) {
+      setTimeout(() => {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
     }
     return;
   }

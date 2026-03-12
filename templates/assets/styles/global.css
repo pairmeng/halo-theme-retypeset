@@ -238,7 +238,7 @@ a:target-current {
 .toc-ribbon {
   position: fixed;
   right: 0;
-  bottom: 30svh;
+  bottom: 40svh;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   padding: 0.6em 0.15em 0.6em 0.2em;
@@ -354,7 +354,8 @@ html.dark .toc-overlay.open {
 #toc-overlay-links a[data-depth="2"] {
   display: block;
   text-decoration: none;
-  line-height: 2.8;
+  line-height: 2.4;
+  padding-top: 0.35rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
