@@ -2,7 +2,7 @@
 <th:block th:fragment="header(isPostPage)">
   <header
     th:classappend="${isPostPage ? 'mb-10.8' : 'mb-10.5'}"
-    class="lg:uno-desktop-column lg:top-20 cjk:tracking-wide"
+    class="sidebar-column lg:uno-desktop-column lg:top-20 cjk:tracking-wide"
   >
     <!-- Site Title: h2 on post pages, h1 on other pages -->
     <th:block th:if="${isPostPage}">

@@ -98,9 +98,7 @@ const SCROLL_THRESHOLD = 300;
 function updateScrollTopVisibility(): void {
   const btn = document.getElementById('scroll-top-button');
   if (!btn) return;
-  const show = window.scrollY > SCROLL_THRESHOLD;
-  btn.style.opacity = show ? '1' : '0';
-  btn.style.pointerEvents = show ? 'auto' : 'none';
+  btn.classList.toggle('visible', window.scrollY > SCROLL_THRESHOLD);
 }
 
 function handleScrollTopClick(e: MouseEvent): void {
