@@ -185,16 +185,8 @@ function handleOverlayClick(e: MouseEvent): void {
     return;
   }
 
-  // Click on backdrop → close
-  if (e.target.closest('.toc-overlay-backdrop')) {
-    closeOverlay();
-    return;
-  }
-
-  // Click on empty area within overlay content (not on a link) → close
-  if (!e.target.closest('#toc-overlay-links')) {
-    closeOverlay();
-  }
+  // Click anywhere else on the overlay (not on a link) → close
+  closeOverlay();
 }
 
 function handlePopstate(): void {

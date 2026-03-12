@@ -58,7 +58,6 @@ function buildPostDOM(options: {
     overlay.id = 'toc-overlay';
     overlay.className = 'toc-overlay';
     overlay.innerHTML = `
-      <div class="toc-overlay-backdrop"></div>
       <div class="toc-overlay-content">
         <h2 class="toc-overlay-title">目录</h2>
         <nav>
@@ -263,9 +262,9 @@ describe('Mobile Sidebar TOC', () => {
       clickElement(ribbon);
       expect(ribbon.classList.contains('visible')).toBe(false);
 
-      // Close overlay
-      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
-      clickElement(backdrop);
+      // Close overlay by clicking on it
+      const overlay = getOverlay()!;
+      clickElement(overlay);
       expect(ribbon.classList.contains('visible')).toBe(true);
     });
   });
@@ -371,15 +370,14 @@ describe('Mobile Sidebar TOC', () => {
       clickElement(getRibbon()!);
     }
 
-    it('should close overlay when backdrop is clicked', () => {
+    it('should close overlay when clicking on overlay area', () => {
       buildPostDOM();
       reinitMobileToc();
       openFirst();
 
-      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
-      clickElement(backdrop);
-
       const overlay = getOverlay()!;
+      clickElement(overlay);
+
       expect(overlay.classList.contains('open')).toBe(false);
       expect(overlay.classList.contains('closing')).toBe(true);
     });
@@ -413,8 +411,7 @@ describe('Mobile Sidebar TOC', () => {
       openFirst();
       expect(document.body.style.overflow).toBe('hidden');
 
-      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
-      clickElement(backdrop);
+      clickElement(getOverlay()!);
       expect(document.body.style.overflow).toBe('');
     });
 
@@ -424,13 +421,12 @@ describe('Mobile Sidebar TOC', () => {
       openFirst();
 
       const overlay = getOverlay()!;
-      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
-      clickElement(backdrop);
+      clickElement(overlay);
 
       expect(overlay.classList.contains('closing')).toBe(true);
       expect(overlay.classList.contains('open')).toBe(false);
 
-      // Simulate transitionend on content panel (slide animation target)
+      // Simulate transitionend on content panel (fade animation target)
       const contentPanel = overlay.querySelector('.toc-overlay-content')!;
       contentPanel.dispatchEvent(new Event('transitionend', { bubbles: false }));
       expect(overlay.classList.contains('closing')).toBe(false);
@@ -443,8 +439,7 @@ describe('Mobile Sidebar TOC', () => {
       openFirst();
 
       const overlay = getOverlay()!;
-      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
-      clickElement(backdrop);
+      clickElement(overlay);
 
       expect(overlay.classList.contains('closing')).toBe(true);
 
@@ -455,17 +450,16 @@ describe('Mobile Sidebar TOC', () => {
       vi.useRealTimers();
     });
 
-    it('should not close overlay on click inside #toc-overlay-links (non-link area)', () => {
+    it('should close overlay on click inside #toc-overlay-links (non-link area)', () => {
       buildPostDOM();
       reinitMobileToc();
       openFirst();
 
-      // Click on the <ul> itself, not on an <a>
+      // Click on the <ul> itself, not on an <a> — frosted overlay closes on any tap
       const linksList = getOverlayLinks()!;
       linksList.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
-      // Overlay should remain open since click was inside #toc-overlay-links
-      expect(getOverlay()!.classList.contains('open')).toBe(true);
+      expect(getOverlay()!.classList.contains('open')).toBe(false);
     });
   });
 
@@ -549,8 +543,7 @@ describe('Mobile Sidebar TOC', () => {
       expect(activeLis[0].querySelector('a')!.getAttribute('href')).toBe('#intro');
 
       // Close and change heading
-      const backdrop = document.querySelector('.toc-overlay-backdrop')!;
-      clickElement(backdrop);
+      clickElement(getOverlay()!);
       getOverlay()!.querySelector('.toc-overlay-content')!.dispatchEvent(new Event('transitionend', { bubbles: false }));
 
       // Second heading becomes active

@@ -81,7 +81,6 @@
         <th:block th:if="${tocMobileMode == 'sidebar'}">
           <div id="toc-ribbon" class="toc-ribbon" role="button" tabindex="0" th:aria-label="${t_toc}" th:text="${t_toc}"></div>
           <div id="toc-overlay" class="toc-overlay">
-            <div class="toc-overlay-backdrop"></div>
             <div class="toc-overlay-content">
               <h2 class="toc-overlay-title" th:text="${t_toc}">目录</h2>
               <nav th:aria-label="${t_toc}">
