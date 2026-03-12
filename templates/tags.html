@@ -7,16 +7,11 @@
     <!-- Decorative Line -->
     <div class="uno-decorative-line"></div>
 
-    <!-- Tag List (pill style matching TagList.astro) -->
-    <div class="no-heti flex flex-wrap gap-x-3 gap-y-3.2">
-      <a
-        th:each="tag : ${tags}"
-        th:href="@{${tag.status.permalink}}"
-        class="relative inline-block border border-secondary/25 rounded-full px-3.2 py-0.7 ring-0 ring-secondary/80 transition-[colors,box-shadow] ease-out hover:border-secondary/80 hover:c-primary hover:font-medium hover:ring-0.2"
-      >
-        <span class="absolute inset-0 flex items-center justify-center whitespace-nowrap transition-font-weight" th:text="${tag.spec.displayName}"></span>
-        <span class="inline-block font-medium opacity-0" aria-hidden="true" th:text="${tag.spec.displayName}"></span>
-      </a>
+    <!-- Tag List (flowing text) -->
+    <div class="no-heti tag-flow">
+      <span class="tag-flow-inner">
+        <a th:each="tag : ${tags}" th:href="@{${tag.status.permalink}}" th:text="${tag.spec.displayName}"></a>
+      </span>
     </div>
   </th:block>
 </html>

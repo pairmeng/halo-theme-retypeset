@@ -7,16 +7,11 @@
     <!-- Decorative Line -->
     <div class="uno-decorative-line"></div>
 
-    <!-- Category List (pill style) -->
-    <div class="no-heti flex flex-wrap gap-x-3 gap-y-3.2">
-      <a
-        th:each="category : ${categories}"
-        th:href="@{${category.status.permalink}}"
-        class="relative inline-block border border-secondary/25 rounded-full px-3.2 py-0.7 ring-0 ring-secondary/80 transition-[colors,box-shadow] ease-out hover:border-secondary/80 hover:c-primary hover:font-medium hover:ring-0.2"
-      >
-        <span class="absolute inset-0 flex items-center justify-center whitespace-nowrap transition-font-weight" th:text="${category.spec.displayName}"></span>
-        <span class="inline-block font-medium opacity-0" aria-hidden="true" th:text="${category.spec.displayName}"></span>
-      </a>
-    </div>
+    <!-- Category List (vertical with dash prefix) -->
+    <ul class="no-heti category-list">
+      <li th:each="category : ${categories}">
+        <a th:href="@{${category.status.permalink}}" th:text="${category.spec.displayName}"></a>
+      </li>
+    </ul>
   </th:block>
 </html>
