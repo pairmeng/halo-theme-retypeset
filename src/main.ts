@@ -9,6 +9,7 @@ import '../templates/assets/styles/transition.css';
 import { initCodeCopy } from './components/code-copy';
 import { initImageZoom, reinitImageZoom } from './components/image-zoom';
 import { initClientRouter } from './components/client-router';
+import { initMobileToc, reinitMobileToc } from './components/mobile-toc';
 
 // Theme configuration
 interface ThemeSettings {
@@ -224,6 +225,9 @@ function initPageComponents(): void {
   // Re-trigger third-party plugin rendering
   reInitPlugins();
 
+  // Mobile sidebar TOC (re-scan headings, re-setup observers)
+  reinitMobileToc();
+
   // Patch plugin buttons after a short delay (plugins inject DOM async)
   setTimeout(patchButtonAccessibility, 500);
 }
@@ -234,6 +238,9 @@ function initOnce(): void {
 
   // Code copy (event delegation on document, survives body swap)
   initCodeCopy();
+
+  // Mobile sidebar TOC (event delegation on document, survives body swap)
+  initMobileToc();
 
   // Image zoom (event listeners on document/window, survives body swap)
   initImageZoom();
@@ -254,6 +261,9 @@ function initOnce(): void {
 
   // TOC (first page load)
   initToc();
+
+  // Mobile sidebar TOC (setup observers for first page)
+  reinitMobileToc();
 
   // Patch plugin buttons on initial load
   setTimeout(patchButtonAccessibility, 500);

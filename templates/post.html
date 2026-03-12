@@ -37,10 +37,10 @@
       </div>
 
       <!-- TOC (CSS-only accordion matching original TOC.astro) -->
-      <th:block th:with="tocDesktopMode=${theme.config.general.toc_desktop_mode ?: 'collapsible'}">
+      <th:block th:with="tocDesktopMode=${theme.config.general.toc_desktop_mode ?: 'collapsible'}, tocMobileMode=${theme.config.general.toc_mobile_mode ?: 'accordion'}">
         <div
           id="toc-container"
-          th:classappend="${tocDesktopMode == 'off' ? 'toc-desktop-off' : (tocDesktopMode == 'always' ? 'toc-desktop-always' : '')}"
+          th:classappend="${(tocDesktopMode == 'off' ? 'toc-desktop-off' : (tocDesktopMode == 'always' ? 'toc-desktop-always' : '')) + (tocMobileMode == 'sidebar' ? ' toc-mobile-sidebar' : (tocMobileMode == 'off' ? ' toc-mobile-off' : ''))}"
           class="mb-6 uno-round-border bg-secondary/5 2xl:fixed 2xl:left-0 2xl:top-44.5 2xl:max-w-[min(calc(50vw-38rem),13rem)] 2xl:border-none 2xl:bg-secondary/0"
           data-toc-pending
         >
@@ -76,6 +76,22 @@
             </nav>
           </div>
         </div>
+      </th:block>
+
+      <!-- Mobile sidebar TOC: ribbon trigger + overlay -->
+      <th:block th:with="tocMobileMode=${theme.config.general.toc_mobile_mode ?: 'accordion'}">
+        <th:block th:if="${tocMobileMode == 'sidebar'}">
+          <div id="toc-ribbon" class="toc-ribbon" role="button" tabindex="0" th:aria-label="${t_toc}"></div>
+          <div id="toc-overlay" class="toc-overlay" hidden>
+            <div class="toc-overlay-backdrop"></div>
+            <div class="toc-overlay-content">
+              <h2 class="toc-overlay-title" th:text="${t_toc}">目录</h2>
+              <nav th:aria-label="${t_toc}">
+                <ul id="toc-overlay-links"></ul>
+              </nav>
+            </div>
+          </div>
+        </th:block>
       </th:block>
 
       <!-- Content -->
@@ -145,6 +161,22 @@
           });
           list.appendChild(frag);
           container.removeAttribute('data-toc-pending');
+          // Also populate overlay TOC for sidebar mode
+          var overlayList = document.getElementById('toc-overlay-links');
+          if (overlayList) {
+            var frag2 = document.createDocumentFragment();
+            headings.forEach(function(h) {
+              var depth = parseInt(h.tagName[1], 10);
+              var li2 = document.createElement('li');
+              var a2 = document.createElement('a');
+              a2.href = '#' + h.id;
+              a2.textContent = h.textContent.trim();
+              a2.setAttribute('data-depth', String(depth));
+              li2.appendChild(a2);
+              frag2.appendChild(li2);
+            });
+            overlayList.appendChild(frag2);
+          }
         })();
       </script>
     </article>

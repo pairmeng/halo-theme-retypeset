@@ -214,6 +214,137 @@ a:target-current {
   }
 }
 
+/* Mobile TOC: hide inline accordion when sidebar mode is active >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+@media (max-width: 1535.9px) {
+  #toc-container.toc-mobile-sidebar {
+    display: none;
+  }
+  #toc-container.toc-mobile-off {
+    display: none;
+  }
+}
+
+/* Mobile TOC: ribbon trigger >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.toc-ribbon {
+  position: fixed;
+  right: 0;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 40px;
+  border-radius: 1px 0 0 1px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out, background-color 0.15s ease-out;
+  z-index: 50;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  --at-apply: 'bg-primary/20';
+}
+.toc-ribbon.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.toc-ribbon:active {
+  --at-apply: 'bg-primary/60';
+}
+@media (min-width: 1536px) {
+  .toc-ribbon {
+    display: none;
+  }
+}
+
+/* Mobile TOC: overlay (full-screen "table of contents page") >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.toc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.toc-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  --at-apply: 'bg-background/95';
+}
+html.dark .toc-overlay-backdrop {
+  --at-apply: 'bg-background/97';
+}
+.toc-overlay.open .toc-overlay-backdrop {
+  opacity: 1;
+}
+.toc-overlay.closing .toc-overlay-backdrop {
+  opacity: 0;
+  transition-duration: 0.25s;
+}
+
+.toc-overlay-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 44rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0.1s,
+              transform 0.35s cubic-bezier(0.25, 1, 0.5, 1) 0.1s;
+  --at-apply: 'py-20 px-[min(7.25vw,3.731rem)]';
+}
+.toc-overlay.open .toc-overlay-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toc-overlay.closing .toc-overlay-content {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition-delay: 0s;
+  transition-duration: 0.2s;
+}
+
+.toc-overlay-title {
+  text-align: center;
+  letter-spacing: 0.5em;
+  margin-bottom: 2.5rem;
+  --at-apply: 'text-lg c-secondary/60 font-normal';
+}
+
+#toc-overlay-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#toc-overlay-links li {
+  --at-apply: 'border-l-2 border-transparent';
+  transition: border-color 0.15s ease-out;
+}
+#toc-overlay-links li.toc-active {
+  --at-apply: 'border-l-primary';
+}
+#toc-overlay-links a {
+  display: block;
+  text-decoration: none;
+  line-height: 2.4;
+  transition: color 0.15s ease-out;
+  --at-apply: 'c-secondary/70 pl-4';
+}
+#toc-overlay-links a[data-depth="3"] {
+  --at-apply: 'pl-8';
+}
+#toc-overlay-links a[data-depth="4"] {
+  --at-apply: 'pl-12';
+}
+#toc-overlay-links a:hover {
+  --at-apply: 'c-primary';
+}
+#toc-overlay-links li.toc-active > a {
+  --at-apply: 'c-primary font-medium';
+}
+
 /* Scroll to top button animation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 #scroll-top-button {
   height: 1rem;

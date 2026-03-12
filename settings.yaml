@@ -69,6 +69,18 @@ spec:
             - label: 关闭
               value: "off"
 
+        - $formkit: select
+          name: toc_mobile_mode
+          label: 移动端目录模式
+          value: "accordion"
+          options:
+            - label: 顶部手风琴
+              value: "accordion"
+            - label: 侧边目录
+              value: "sidebar"
+            - label: 关闭
+              value: "off"
+
         - $formkit: text
           name: icp_number
           label: ICP 备案号
