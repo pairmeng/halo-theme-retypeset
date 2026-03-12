@@ -171,35 +171,44 @@ a:target-current {
   --at-apply: '2xl:hidden';
 }
 
-/* Layout direction >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
-/* Content wrapper margins: managed here instead of UnoCSS attributify to avoid specificity conflicts */
+/* Layout direction (CSS custom properties) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+:root {
+  --layout-sidebar-right: max(5rem, calc(50vw - 35rem));
+  --layout-sidebar-left: auto;
+  --layout-content-ml: max(5.75rem, calc(50vw - 34.25rem));
+  --layout-content-mr: max(5.75rem, calc(50vw - 34.25rem));
+  --layout-btn-right: max(5rem, calc(50vw - 35rem));
+  --layout-btn-left: auto;
+  --layout-toc-left: 0;
+  --layout-toc-right: auto;
+}
+[data-layout="left"] {
+  --layout-sidebar-right: auto;
+  --layout-sidebar-left: max(5rem, calc(50vw - 35rem));
+  --layout-content-ml: max(5.75rem, calc(50vw - 9.75rem));
+  --layout-btn-right: auto;
+  --layout-btn-left: max(5rem, calc(50vw - 35rem));
+  --layout-toc-left: auto;
+  --layout-toc-right: 0;
+}
 @media (min-width: 1024px) {
-  /* Default (right sidebar): content on the left */
-  .content-wrapper {
-    margin-left: max(5.75rem, calc(50vw - 34.25rem));
-    margin-right: max(5.75rem, calc(50vw - 34.25rem));
+  .sidebar-column {
+    right: var(--layout-sidebar-right);
+    left: var(--layout-sidebar-left);
   }
-  /* Left sidebar: mirror content to the right */
-  [data-layout="left"] .content-wrapper {
-    margin-left: max(5.75rem, calc(50vw - 9.75rem));
-    margin-right: max(5.75rem, calc(50vw - 34.25rem));
+  body .content-wrapper {
+    margin-left: var(--layout-content-ml);
+    margin-right: var(--layout-content-mr);
   }
-  /* Flip sidebar (header/navbar/footer) from right to left */
-  [data-layout="left"] .sidebar-column {
-    right: auto !important;
-    left: max(5rem, calc(50vw - 35rem)) !important;
-  }
-  /* Flip button container from right to left */
-  [data-layout="left"] .layout-flip-buttons {
-    right: auto !important;
-    left: max(5rem, calc(50vw - 35rem)) !important;
+  .layout-flip-buttons {
+    right: var(--layout-btn-right);
+    left: var(--layout-btn-left);
   }
 }
 @media (min-width: 1536px) {
-  /* Flip TOC from left to right */
-  [data-layout="left"] #toc-container {
-    left: auto !important;
-    right: 0 !important;
+  #toc-container {
+    left: var(--layout-toc-left);
+    right: var(--layout-toc-right);
   }
 }
 
