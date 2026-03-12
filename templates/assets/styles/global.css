@@ -238,7 +238,7 @@ a:target-current {
 .toc-ribbon {
   position: fixed;
   right: 0;
-  bottom: 40svh;
+  top: 40svh;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   padding: 0.6em 0.15em 0.6em 0.2em;
