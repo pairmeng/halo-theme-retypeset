@@ -159,16 +159,20 @@ a:target-current {
 }
 
 /* TOC desktop mode: off (hidden on desktop, visible on mobile) */
-.toc-desktop-off {
-  --at-apply: '2xl:hidden';
+@media (min-width: 1536px) {
+  #toc-container.toc-desktop-off {
+    display: none;
+  }
 }
 
 /* TOC desktop mode: always (always expanded, no toggle header on desktop) */
 .toc-desktop-always #toc-accordion-wrapper {
   --at-apply: 'rows-[0fr] 2xl:rows-[1fr]';
 }
-.toc-desktop-always .toc-no-toggle {
-  --at-apply: '2xl:hidden';
+@media (min-width: 1536px) {
+  .toc-desktop-always .toc-no-toggle {
+    display: none;
+  }
 }
 
 /* Layout direction (CSS custom properties) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
