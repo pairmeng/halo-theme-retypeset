@@ -158,11 +158,9 @@ a:target-current {
   --at-apply: '2xl:rows-[0fr]';
 }
 
-/* TOC desktop mode: off (hidden on desktop, visible on mobile) */
-@media (min-width: 1536px) {
-  #toc-container.toc-desktop-off {
-    display: none;
-  }
+/* TOC desktop mode: off (hidden on all viewports) */
+#toc-container.toc-desktop-off {
+  display: none;
 }
 
 /* TOC desktop mode: always (always expanded, no toggle header on desktop) */
