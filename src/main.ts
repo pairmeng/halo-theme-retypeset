@@ -204,6 +204,18 @@ function reInitPlugins(): void {
   }
 }
 
+// Patch accessibility for plugin-injected buttons that lack aria-label
+function patchButtonAccessibility(): void {
+  document.querySelectorAll<HTMLButtonElement>('button:not([aria-label])').forEach(btn => {
+    if (btn.textContent?.trim()) return;
+    if (btn.getAttribute('title')) return;
+    const pre = btn.closest('pre') ?? btn.parentElement?.querySelector('pre');
+    if (pre || btn.classList.contains('code-copy-button')) {
+      btn.setAttribute('aria-label', 'Copy code');
+    }
+  });
+}
+
 // Per-page initialization (runs on first load + after each page swap)
 function initPageComponents(): void {
   initToc();
@@ -211,6 +223,9 @@ function initPageComponents(): void {
 
   // Re-trigger third-party plugin rendering
   reInitPlugins();
+
+  // Patch plugin buttons after a short delay (plugins inject DOM async)
+  setTimeout(patchButtonAccessibility, 500);
 }
 
 // One-time initialization (runs only on first page load)
@@ -239,6 +254,9 @@ function initOnce(): void {
 
   // TOC (first page load)
   initToc();
+
+  // Patch plugin buttons on initial load
+  setTimeout(patchButtonAccessibility, 500);
 }
 
 // Register global event listeners (once, survive body swap)
