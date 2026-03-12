@@ -63,11 +63,11 @@ spec:
           value: collapsible
           options:
             - label: 常显
-              value: always
+              value: "always"
             - label: 收缩（默认展开，点击收缩）
-              value: collapsible
+              value: "collapsible"
             - label: 关闭
-              value: off
+              value: "off"
 
         - $formkit: text
           name: icp_number
