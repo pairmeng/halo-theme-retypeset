@@ -394,6 +394,69 @@ html.dark .toc-overlay.open {
   --at-apply: 'c-primary font-medium';
 }
 
+/* Tag flow typography >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.tag-flow {
+  line-height: 2.4;
+  text-align: justify;
+}
+.tag-flow a {
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.2s ease-out;
+  --at-apply: 'c-secondary/60';
+}
+.tag-flow a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  --at-apply: 'c-primary';
+}
+.tag-flow .tag-sep {
+  margin: 0 0.15em;
+  --at-apply: 'c-secondary/20';
+}
+.tag-flow a.tag-active {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  --at-apply: 'c-primary font-semibold';
+}
+
+/* Category list >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.category-list {
+  list-style: none;
+  padding: 0;
+}
+.category-list li {
+  line-height: 2.6;
+}
+.category-list a {
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease-out;
+  --at-apply: 'c-secondary/70 text-base';
+}
+.category-list a::before {
+  content: '—\00a0';
+  --at-apply: 'c-secondary/25';
+}
+.category-list a:hover {
+  --at-apply: 'c-primary';
+}
+
+/* Post tags (bottom of article) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.post-tags a {
+  text-decoration: none;
+  margin-right: 1.2em;
+  transition: color 0.2s ease-out;
+  --at-apply: 'c-secondary/50';
+}
+.post-tags a::before {
+  content: '#';
+  --at-apply: 'c-secondary/25';
+}
+.post-tags a:hover {
+  --at-apply: 'c-primary';
+}
+
 /* Scroll to top button animation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 #scroll-top-button {
   height: 1rem;

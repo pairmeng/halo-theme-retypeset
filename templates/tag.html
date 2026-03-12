@@ -5,16 +5,15 @@
 >
   <th:block th:fragment="content">
     <!-- All Tags (current tag highlighted) -->
-    <div class="no-heti flex flex-wrap gap-x-3 gap-y-3.2 mb-8">
-      <a
-        th:each="t : ${tags}"
-        th:href="@{${t.status.permalink}}"
-        th:classappend="${t.spec.displayName == tag.spec.displayName ? 'border-secondary/80 c-primary font-medium ring-0.2' : 'ring-0'}"
-        class="relative inline-block border border-secondary/25 rounded-full px-3.2 py-0.7 ring-secondary/80 transition-[colors,box-shadow] ease-out hover:border-secondary/80 hover:c-primary hover:font-medium hover:ring-0.2"
-      >
-        <span class="absolute inset-0 flex items-center justify-center whitespace-nowrap transition-font-weight" th:text="${t.spec.displayName}"></span>
-        <span class="inline-block font-medium opacity-0" aria-hidden="true" th:text="${t.spec.displayName}"></span>
-      </a>
+    <div class="no-heti tag-flow mb-8">
+      <th:block th:each="t, iter : ${tags}">
+        <a
+          th:href="@{${t.status.permalink}}"
+          th:text="${t.spec.displayName}"
+          th:classappend="${t.spec.displayName == tag.spec.displayName ? 'tag-active' : ''}"
+        ></a>
+        <span th:if="${!iter.last}" class="tag-sep">·</span>
+      </th:block>
     </div>
 
     <!-- Decorative Line -->
