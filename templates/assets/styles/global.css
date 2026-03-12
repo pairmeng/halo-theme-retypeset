@@ -170,3 +170,24 @@ a:target-current {
 .toc-desktop-always .toc-no-toggle {
   --at-apply: '2xl:hidden';
 }
+
+/* Layout direction: left sidebar >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+@media (min-width: 1024px) {
+  /* Flip sidebar (header/navbar/footer) from right to left */
+  [data-layout="left"] .uno-desktop-column {
+    right: auto;
+    left: max(5rem, calc(50vw - 35rem));
+  }
+  /* Flip button container from right to left */
+  [data-layout="left"] .layout-flip-buttons {
+    right: auto;
+    left: max(5rem, calc(50vw - 35rem));
+  }
+}
+@media (min-width: 1536px) {
+  /* Flip TOC from left to right */
+  [data-layout="left"] #toc-container {
+    left: auto;
+    right: 0;
+  }
+}

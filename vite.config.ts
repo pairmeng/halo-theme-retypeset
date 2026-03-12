@@ -82,6 +82,15 @@ export default defineConfig({
             selector: (s: string) => `${s}:is(:lang(zh), :lang(ja), :lang(ko))`,
           };
         },
+        (matcher) => {
+          if (!matcher.startsWith('layout-left:')) {
+            return matcher;
+          }
+          return {
+            matcher: matcher.slice(12),
+            selector: (s: string) => `[data-layout="left"] ${s}`,
+          };
+        },
       ],
       transformers: [
         transformerDirectives(),

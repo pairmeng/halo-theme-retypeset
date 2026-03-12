@@ -19,6 +19,7 @@
   "
   th:lang="${lang == 'en' ? 'en' : 'zh-CN'}"
   th:fragment="html (title, content, head, footer, sidebar, contentClass, isPostPage)"
+  th:attr="data-layout=${theme.config.general.layout_direction ?: 'right'}"
   th:classappend="${(theme.config.general.font_style == 'serif' ? 'font-serif' : 'font-sans') + (isPostPage ? ' scroll-smooth' : '')}"
 >
   <head>

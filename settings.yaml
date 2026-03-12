@@ -48,6 +48,16 @@ spec:
               value: image
 
         - $formkit: select
+          name: layout_direction
+          label: 侧边栏位置
+          value: right
+          options:
+            - label: 右侧（默认）
+              value: right
+            - label: 左侧
+              value: left
+
+        - $formkit: select
           name: toc_desktop_mode
           label: 桌面端目录模式
           value: collapsible
