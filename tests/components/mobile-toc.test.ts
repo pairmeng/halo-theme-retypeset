@@ -629,6 +629,27 @@ describe('Mobile Sidebar TOC', () => {
     });
   });
 
+  // ── Ribbon conditional display ──────────────────────────────────
+
+  describe('Ribbon conditional display', () => {
+    it('should not show ribbon when overlay TOC has no links', () => {
+      buildPostDOM({ headings: [] });
+      reinitMobileToc();
+
+      const ribbon = getRibbon()!;
+      // Ribbon should NOT have 'visible' class when there are no TOC entries
+      expect(ribbon.classList.contains('visible')).toBe(false);
+    });
+
+    it('should show ribbon when overlay TOC has links', () => {
+      buildPostDOM();
+      reinitMobileToc();
+
+      const ribbon = getRibbon()!;
+      expect(ribbon.classList.contains('visible')).toBe(true);
+    });
+  });
+
   // ── TOC link navigation ──────────────────────────────────────────
 
   describe('TOC link navigation', () => {
@@ -687,6 +708,62 @@ describe('Mobile Sidebar TOC', () => {
       expect(backSpy).not.toHaveBeenCalled();
 
       backSpy.mockRestore();
+    });
+
+    it('should handle link click with non-existent target gracefully', () => {
+      vi.useFakeTimers();
+      buildPostDOM();
+      reinitMobileToc();
+
+      clickElement(getRibbon()!);
+
+      // Inject a link pointing to a non-existent heading
+      const overlayLinks = getOverlayLinks()!;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#non-existent-heading';
+      a.setAttribute('data-depth', '2');
+      a.textContent = 'Ghost Section';
+      li.appendChild(a);
+      overlayLinks.appendChild(li);
+
+      vi.mocked(Element.prototype.scrollIntoView).mockClear();
+
+      // Should not throw
+      expect(() => clickElement(a)).not.toThrow();
+
+      // Should still close overlay
+      expect(getOverlay()!.classList.contains('open')).toBe(false);
+
+      // After 150ms, no scroll should fire (target doesn't exist)
+      vi.advanceTimersByTime(150);
+      expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+
+      vi.useRealTimers();
+    });
+
+    it('should not scroll when link has no href', () => {
+      vi.useFakeTimers();
+      buildPostDOM();
+      reinitMobileToc();
+
+      clickElement(getRibbon()!);
+
+      const overlayLinks = getOverlayLinks()!;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.setAttribute('data-depth', '2');
+      a.textContent = 'No Href';
+      li.appendChild(a);
+      overlayLinks.appendChild(li);
+
+      vi.mocked(Element.prototype.scrollIntoView).mockClear();
+
+      expect(() => clickElement(a)).not.toThrow();
+      vi.advanceTimersByTime(150);
+      expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+
+      vi.useRealTimers();
     });
   });
 });
