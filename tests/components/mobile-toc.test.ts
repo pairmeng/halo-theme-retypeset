@@ -663,5 +663,24 @@ describe('Mobile Sidebar TOC', () => {
       expect(getOverlay()!.classList.contains('open')).toBe(false);
       expect(document.body.style.overflow).toBe('');
     });
+
+    it('should not call history.back on link click (uses replaceState)', () => {
+      buildPostDOM();
+      reinitMobileToc();
+
+      const backSpy = vi.spyOn(history, 'back');
+
+      clickElement(getRibbon()!);
+      // Reset spy — pushState was called during open
+      backSpy.mockClear();
+
+      const link = getOverlayLinks()!.querySelector('a[href="#chapter-2"]')!;
+      clickElement(link);
+
+      // Should NOT call history.back (avoids browser scroll restoration)
+      expect(backSpy).not.toHaveBeenCalled();
+
+      backSpy.mockRestore();
+    });
   });
 });

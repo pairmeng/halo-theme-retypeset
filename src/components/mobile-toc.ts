@@ -179,8 +179,12 @@ function handleOverlayClick(e: MouseEvent): void {
         targetEl.scrollIntoView({ behavior: 'instant', block: 'start' });
       }
     }
-    // Then fade out overlay — page is already at the right position
-    closeOverlay();
+    // Close overlay without history.back() to avoid browser scroll restoration
+    closeOverlay(true);
+    // Clean up history state without triggering popstate
+    if (history.state?.tocOverlay) {
+      history.replaceState({}, '');
+    }
     return;
   }
 
