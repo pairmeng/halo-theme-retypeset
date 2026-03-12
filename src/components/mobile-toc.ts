@@ -200,6 +200,9 @@ function handleOverlayClick(e: MouseEvent): void {
   const overlay = getOverlay();
   if (!overlay || !isOverlayOpen) return;
 
+  // Ignore clicks outside the overlay (e.g. ribbon click that just opened it)
+  if (!e.target.closest('#toc-overlay')) return;
+
   // Click on a TOC link → navigate + close
   const link = e.target.closest<HTMLAnchorElement>('#toc-overlay-links a');
   if (link) {
