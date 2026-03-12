@@ -238,7 +238,7 @@ a:target-current {
 .toc-ribbon {
   position: fixed;
   right: 0;
-  top: 50%;
+  bottom: 30vh;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   padding: 0.6em 0.15em 0.6em 0.2em;
@@ -248,7 +248,7 @@ a:target-current {
   border-radius: 0.25rem 0 0 0.25rem;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-50%) translateX(100%);
+  transform: translateX(100%);
   transition: opacity 0.3s ease-out, transform 0.3s ease-out, color 0.15s ease-out;
   z-index: 50;
   cursor: pointer;
@@ -258,7 +258,7 @@ a:target-current {
 .toc-ribbon.visible {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(-50%) translateX(0);
+  transform: translateX(0);
 }
 .toc-ribbon:active {
   --at-apply: 'c-primary/80';
@@ -281,7 +281,7 @@ a:target-current {
   pointer-events: none;
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
-  transition: backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out, visibility 0s 0.3s;
+  transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out, visibility 0s 0.3s;
   --at-apply: 'bg-background/0';
 }
 .toc-overlay.open {
@@ -289,7 +289,7 @@ a:target-current {
   pointer-events: auto;
   backdrop-filter: blur(12px) saturate(1.2);
   -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  transition: backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out, visibility 0s 0s;
+  transition: background-color 0.3s ease-out, backdrop-filter 0.3s ease-out, -webkit-backdrop-filter 0.3s ease-out, visibility 0s 0s;
   --at-apply: 'bg-background/60';
 }
 html.dark .toc-overlay.open {
@@ -300,7 +300,7 @@ html.dark .toc-overlay.open {
   pointer-events: none;
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
-  transition: backdrop-filter 0.2s ease-in, -webkit-backdrop-filter 0.2s ease-in, visibility 0s 0.2s;
+  transition: background-color 0.2s ease-in, backdrop-filter 0.2s ease-in, -webkit-backdrop-filter 0.2s ease-in, visibility 0s 0.2s;
   --at-apply: 'bg-background/0';
 }
 
