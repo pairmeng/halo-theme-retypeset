@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest';
-import { initMobileToc, reinitMobileToc } from './mobile-toc';
+import { initMobileToc, reinitMobileToc } from '../../src/components/mobile-toc';
 
 // ── Test helpers ───────────────────────────────────────────────────
 
