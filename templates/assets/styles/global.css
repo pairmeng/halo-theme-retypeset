@@ -172,9 +172,12 @@ a:target-current {
 
 /* TOC desktop mode: always (always expanded, no toggle header on desktop) */
 .toc-desktop-always #toc-accordion-wrapper {
-  --at-apply: 'rows-[0fr] 2xl:rows-[1fr]';
+  --at-apply: '2xl:rows-[1fr]';
 }
 @media (min-width: 1536px) {
+  .toc-desktop-always #toc-toggle:checked ~ #toc-accordion-wrapper {
+    grid-template-rows: 1fr;
+  }
   .toc-desktop-always .toc-no-toggle {
     display: none;
   }
