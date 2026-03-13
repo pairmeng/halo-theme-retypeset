@@ -13,6 +13,13 @@
           th:text="${t_posts}"
         ></a>
       </li>
+      <li th:if="${hasMomentsPlugin}">
+        <a
+          href="/moments"
+          th:class="${#strings.equals(_templateId, 'moments') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
+          th:text="${t_moments}"
+        ></a>
+      </li>
       <li>
         <a
           href="/tags"
