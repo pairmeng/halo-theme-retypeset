@@ -62,7 +62,8 @@ h4:hover .heading-anchor-link svg:hover {
   padding-bottom: 2rem;
 }
 .zoom-img {
-  --at-apply: 'fixed z-1000 cursor-zoom-out transition-transform duration-300';
+  --at-apply: 'fixed z-1000 cursor-zoom-out';
+  transition: top 0.3s ease-out, left 0.3s ease-out, width 0.3s ease-out, height 0.3s ease-out;
 }
 .zoom-scroll .zoom-img {
   position: absolute;
