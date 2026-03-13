@@ -57,8 +57,17 @@ h4:hover .heading-anchor-link svg:hover {
 .zoom-overlay {
   --at-apply: 'fixed left-0 top-0 z-999 hidden h-full w-full cursor-zoom-out bg-background/95 op-0 transition-opacity duration-300';
 }
+.zoom-overlay.zoom-scroll {
+  overflow-y: auto;
+  padding-bottom: 2rem;
+}
 .zoom-img {
   --at-apply: 'fixed z-1000 cursor-zoom-out transition-transform duration-300';
+}
+.zoom-scroll .zoom-img {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
 }
 
 /* Code Copy Button >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
@@ -474,9 +483,9 @@ html.dark .toc-overlay.open {
 
 /* Moments >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 .moment-item {
-  padding-bottom: 1.75rem;
-  margin-bottom: 1.75rem;
-  border-bottom: 1px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.15);
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.12);
 }
 .moment-item:last-child {
   border-bottom: none;
@@ -486,12 +495,13 @@ html.dark .toc-overlay.open {
 .moment-date {
   display: inline-block;
   white-space: nowrap;
-  --at-apply: 'font-time text-3.5 c-secondary/45 lg:text-3.65';
+  letter-spacing: 0.02em;
+  --at-apply: 'font-time text-3.25 c-secondary/35 lg:text-3.4';
 }
 .moment-content {
-  margin-top: 0.4em;
+  margin-top: 0.5em;
   line-height: 1.85;
-  --at-apply: 'c-secondary/80';
+  --at-apply: 'c-secondary';
 }
 .moment-content p {
   margin: 0.4em 0;
@@ -555,7 +565,7 @@ html.dark .toc-overlay.open {
 .moment-tags {
   overflow: hidden;
   line-height: 2;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.25rem;
 }
 .moment-tags-inner {
   display: block;

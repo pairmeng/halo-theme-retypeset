@@ -57,23 +57,47 @@ function zoomIn(img: HTMLImageElement) {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   const scaleFactor = window.innerWidth < 768 ? 1 : 0.8;
-  const scale = Math.min(
-    (viewportWidth * scaleFactor) / rect.width,
-    (viewportHeight * scaleFactor) / rect.height,
-  );
-  const translateX = (-rect.left + (viewportWidth - rect.width) / 2) / scale;
-  const translateY = (-rect.top + (viewportHeight - rect.height) / 2) / scale;
+  const isLongImage = rect.height / rect.width > 1.8;
 
-  // Start animation
-  requestAnimationFrame(() => {
-    if (overlay) {
-      overlay.style.opacity = '1';
-    }
+  if (isLongImage && overlay) {
+    // Long image mode: scale by width, enable scrolling
+    const scale = (viewportWidth * scaleFactor) / rect.width;
+    const SCROLL_PADDING = 32;
 
-    if (zoomedImg) {
-      zoomedImg.style.transform = `scale(${scale}) translate3d(${translateX}px, ${translateY}px, 0)`;
-    }
-  });
+    overlay.classList.add('zoom-scroll');
+    zoomedImg.style.position = 'absolute';
+    zoomedImg.style.top = `${SCROLL_PADDING}px`;
+    zoomedImg.style.left = `${(viewportWidth - rect.width * scale) / 2}px`;
+    zoomedImg.style.width = `${rect.width * scale}px`;
+    zoomedImg.style.height = `${rect.height * scale}px`;
+    overlay.appendChild(zoomedImg);
+
+    requestAnimationFrame(() => {
+      if (overlay) {
+        overlay.style.opacity = '1';
+      }
+      if (zoomedImg) {
+        zoomedImg.style.opacity = '1';
+      }
+    });
+  } else {
+    // Normal image mode: fit to viewport
+    const scale = Math.min(
+      (viewportWidth * scaleFactor) / rect.width,
+      (viewportHeight * scaleFactor) / rect.height,
+    );
+    const translateX = (-rect.left + (viewportWidth - rect.width) / 2) / scale;
+    const translateY = (-rect.top + (viewportHeight - rect.height) / 2) / scale;
+
+    requestAnimationFrame(() => {
+      if (overlay) {
+        overlay.style.opacity = '1';
+      }
+      if (zoomedImg) {
+        zoomedImg.style.transform = `scale(${scale}) translate3d(${translateX}px, ${translateY}px, 0)`;
+      }
+    });
+  }
 }
 
 // Zoom out the image
@@ -83,9 +107,16 @@ function zoomOut() {
   }
 
   // Start closing animation
-  zoomedImg.style.transform = '';
   overlay.style.opacity = '0';
   document.body.style.overflow = '';
+
+  const isScrollMode = overlay.classList.contains('zoom-scroll');
+  if (isScrollMode) {
+    overlay.classList.remove('zoom-scroll');
+    zoomedImg.style.opacity = '0';
+  } else {
+    zoomedImg.style.transform = '';
+  }
 
   // Define cleanup logic
   const cleanup = () => {
