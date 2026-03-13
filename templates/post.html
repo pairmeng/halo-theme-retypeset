@@ -144,19 +144,35 @@
             }
             used[h.id] = true;
           });
-          var indentClasses = ['', 'ml-4', 'ml-8', 'ml-12'];
+          var subIndent = ['', 'ml-4', 'ml-8'];
           var frag = document.createDocumentFragment();
+          var topLi = null;
+          var groupUl = null;
           headings.forEach(function(h) {
             var depth = parseInt(h.tagName[1], 10);
             var indent = depth - minLevel;
-            var li = document.createElement('li');
-            if (indent > 0 && indent < indentClasses.length) li.className = indentClasses[indent];
             var a = document.createElement('a');
             a.href = '#' + h.id;
             a.textContent = h.textContent.trim();
             a.className = 'no-heti toc-links-h' + depth;
-            li.appendChild(a);
-            frag.appendChild(li);
+            if (indent === 0) {
+              groupUl = null;
+              topLi = document.createElement('li');
+              topLi.appendChild(a);
+              frag.appendChild(topLi);
+            } else {
+              if (!groupUl) {
+                groupUl = document.createElement('ul');
+                groupUl.className = 'toc-sub-group';
+                if (topLi) { topLi.appendChild(groupUl); }
+                else { var w = document.createElement('li'); w.appendChild(groupUl); frag.appendChild(w); }
+              }
+              var li = document.createElement('li');
+              var rel = indent - 1;
+              if (rel > 0 && rel < subIndent.length) li.className = subIndent[rel];
+              li.appendChild(a);
+              groupUl.appendChild(li);
+            }
           });
           list.appendChild(frag);
           container.removeAttribute('data-toc-pending');

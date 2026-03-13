@@ -164,6 +164,13 @@ html.dark {
 a:target-current {
   --at-apply: '2xl:(c-primary font-medium)';
 }
+.toc-sub-group {
+  list-style: none;
+  padding: 0 0 0 0.75rem;
+  margin: 0.3rem 0 0 0.3rem;
+  border-left: 1px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.15);
+  --at-apply: 'space-y-1.1 2xl:space-y-1';
+}
 .toc-links-h1, .toc-links-h2, .toc-links-h3, .toc-links-h4 {
   --at-apply: 'text-balance text-sm font-normal no-underline after:bottom-0.15em 2xl:(text-3.2 c-secondary/80 hover:c-primary hover:font-medium)';
   transition: color 0.15s ease-out, font-weight 0.15s ease-out;
