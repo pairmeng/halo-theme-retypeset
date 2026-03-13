@@ -127,7 +127,11 @@
           var container = document.getElementById('toc-container');
           var list = document.getElementById('toc-links-list');
           if (!content || !container || !list) return;
-          var headings = content.querySelectorAll('h2, h3, h4');
+          // Detect if body content uses h1 — if so, include h1 in TOC
+          var hasH1 = content.querySelector('h1') !== null;
+          var selector = hasH1 ? 'h1, h2, h3, h4' : 'h2, h3, h4';
+          var minLevel = hasH1 ? 1 : 2;
+          var headings = content.querySelectorAll(selector);
           if (headings.length === 0) { container.style.display = 'none'; return; }
           var used = {};
           headings.forEach(function(h) {
@@ -140,12 +144,13 @@
             }
             used[h.id] = true;
           });
+          var indentClasses = ['', 'ml-4', 'ml-8', 'ml-12'];
           var frag = document.createDocumentFragment();
           headings.forEach(function(h) {
             var depth = parseInt(h.tagName[1], 10);
+            var indent = depth - minLevel;
             var li = document.createElement('li');
-            if (depth === 3) li.className = 'ml-4';
-            if (depth === 4) li.className = 'ml-8';
+            if (indent > 0 && indent < indentClasses.length) li.className = indentClasses[indent];
             var a = document.createElement('a');
             a.href = '#' + h.id;
             a.textContent = h.textContent.trim();

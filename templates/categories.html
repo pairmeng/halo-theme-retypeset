@@ -7,11 +7,39 @@
     <!-- Decorative Line -->
     <div class="uno-decorative-line"></div>
 
-    <!-- Category List (vertical with dash prefix) -->
+    <!-- Category Tree (recursive with subcategory support) -->
     <ul class="no-heti category-list">
-      <li th:each="category : ${categories}">
-        <a th:href="@{${category.status.permalink}}" th:text="${category.spec.displayName}"></a>
-      </li>
+      <th:block th:each="category : ${categories}">
+        <li>
+          <a th:href="@{${category.status.permalink}}" th:text="${category.spec.displayName}"></a>
+          <span class="category-count" th:if="${category.postCount gt 0}" th:text="${category.postCount}"></span>
+        </li>
+        <!-- Subcategories -->
+        <th:block th:if="${category.children != null and not #lists.isEmpty(category.children)}">
+          <li class="category-sub">
+            <ul class="category-list category-list-nested">
+              <th:block th:replace="~{categories :: categoryBranch(children=${category.children})}" />
+            </ul>
+          </li>
+        </th:block>
+      </th:block>
     </ul>
+  </th:block>
+
+  <!-- Recursive fragment for subcategory branches -->
+  <th:block th:fragment="categoryBranch(children)">
+    <th:block th:each="child : ${children}">
+      <li>
+        <a th:href="@{${child.status.permalink}}" th:text="${child.spec.displayName}"></a>
+        <span class="category-count" th:if="${child.postCount gt 0}" th:text="${child.postCount}"></span>
+      </li>
+      <th:block th:if="${child.children != null and not #lists.isEmpty(child.children)}">
+        <li class="category-sub">
+          <ul class="category-list category-list-nested">
+            <th:block th:replace="~{categories :: categoryBranch(children=${child.children})}" />
+          </ul>
+        </li>
+      </th:block>
+    </th:block>
   </th:block>
 </html>

@@ -164,7 +164,7 @@ html.dark {
 a:target-current {
   --at-apply: '2xl:(c-primary font-medium)';
 }
-.toc-links-h2, .toc-links-h3, .toc-links-h4 {
+.toc-links-h1, .toc-links-h2, .toc-links-h3, .toc-links-h4 {
   --at-apply: 'text-balance text-sm font-normal no-underline after:bottom-0.15em 2xl:(text-3.2 c-secondary/80 hover:c-primary hover:font-medium)';
   transition: color 0.15s ease-out, font-weight 0.15s ease-out;
 }
@@ -483,6 +483,31 @@ html.dark .toc-overlay.open {
 }
 .category-list a:hover {
   --at-apply: 'c-primary';
+}
+.category-count {
+  --at-apply: 'ml-1.5 text-3 c-secondary/25 font-time';
+}
+.category-sub {
+  list-style: none;
+}
+.category-list-nested {
+  list-style: none;
+  padding: 0;
+  margin-left: 1.5rem;
+}
+.category-list-nested a::before {
+  content: '·\00a0';
+  --at-apply: 'c-secondary/20';
+}
+.category-list-nested .category-list-nested a::before {
+  content: '‹\00a0';
+  --at-apply: 'c-secondary/15';
+}
+.category-list-nested a {
+  --at-apply: 'c-secondary/55 text-3.6';
+}
+.category-list-nested .category-list-nested a {
+  --at-apply: 'c-secondary/40 text-3.4';
 }
 
 /* Post tags (bottom of article) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */

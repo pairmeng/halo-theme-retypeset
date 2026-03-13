@@ -128,16 +128,16 @@ describe('Image Zoom', () => {
   });
 
   describe('Ignore conditions', () => {
-    it('should ignore images smaller than 100px width', () => {
-      const img = createImage({ width: 50, height: 200 });
+    it('should ignore images smaller than 50px width', () => {
+      const img = createImage({ width: 30, height: 200 });
 
       clickElement(img);
 
       expect(getZoomedImg()).toBeNull();
     });
 
-    it('should ignore images smaller than 100px height', () => {
-      const img = createImage({ width: 200, height: 50 });
+    it('should ignore images smaller than 50px height', () => {
+      const img = createImage({ width: 200, height: 30 });
 
       clickElement(img);
 
