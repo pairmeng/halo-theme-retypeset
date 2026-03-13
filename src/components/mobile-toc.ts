@@ -48,7 +48,10 @@ function setupHeadingTracking(): void {
   const content = document.getElementById('post-content');
   if (!content) return;
 
-  const headings = content.querySelectorAll<HTMLElement>('h2, h3, h4');
+  // Match the same heading levels as the TOC inline script
+  const hasH1 = content.querySelector('h1') !== null;
+  const selector = hasH1 ? 'h1, h2, h3, h4' : 'h2, h3, h4';
+  const headings = content.querySelectorAll<HTMLElement>(selector);
   if (headings.length === 0) return;
 
   headingObserver = new IntersectionObserver(

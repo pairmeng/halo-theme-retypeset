@@ -243,6 +243,106 @@ describe('Mobile Sidebar TOC', () => {
     });
   });
 
+  // ── H1 heading support ──────────────────────────────────────────
+
+  describe('H1 heading support', () => {
+    it('should include h1 in heading tracking when h1 exists in content', () => {
+      buildPostDOM({
+        headings: [
+          { tag: 'h1', id: 'title-1', text: 'Title 1' },
+          { tag: 'h2', id: 'section-1', text: 'Section 1' },
+          { tag: 'h3', id: 'sub-1', text: 'Sub 1' },
+        ],
+      });
+      reinitMobileToc();
+
+      const observer = mockObserverInstances[0];
+      expect(observer).toBeDefined();
+      // All 3 headings (h1, h2, h3) should be observed
+      expect(observer.observedElements.size).toBe(3);
+    });
+
+    it('should observe h1 element specifically', () => {
+      buildPostDOM({
+        headings: [
+          { tag: 'h1', id: 'main-title', text: 'Main Title' },
+          { tag: 'h2', id: 'intro', text: 'Intro' },
+        ],
+      });
+      reinitMobileToc();
+
+      const observer = mockObserverInstances[0];
+      const h1 = document.getElementById('main-title')!;
+      expect(observer.observedElements.has(h1)).toBe(true);
+    });
+
+    it('should NOT include h1 in tracking when no h1 in content', () => {
+      buildPostDOM({
+        headings: [
+          { tag: 'h2', id: 'intro', text: 'Introduction' },
+          { tag: 'h3', id: 'sub-1', text: 'Sub Section' },
+        ],
+      });
+      reinitMobileToc();
+
+      const observer = mockObserverInstances[0];
+      expect(observer.observedElements.size).toBe(2);
+    });
+
+    it('should track h1 as active heading when it intersects', () => {
+      buildPostDOM({
+        headings: [
+          { tag: 'h1', id: 'top-title', text: 'Top Title' },
+          { tag: 'h2', id: 'section-a', text: 'Section A' },
+        ],
+      });
+      reinitMobileToc();
+
+      const h1 = document.getElementById('top-title')!;
+      triggerIntersection(0, [{ isIntersecting: true, target: h1 }]);
+
+      clickElement(getRibbon()!);
+
+      const activeLi = getOverlayLinks()!.querySelector('li.toc-active');
+      expect(activeLi).not.toBeNull();
+      expect(activeLi!.querySelector('a')!.getAttribute('href')).toBe('#top-title');
+    });
+
+    it('should handle mixed h1-h4 headings', () => {
+      buildPostDOM({
+        headings: [
+          { tag: 'h1', id: 'ch1', text: 'Chapter 1' },
+          { tag: 'h2', id: 's1', text: 'Section 1' },
+          { tag: 'h3', id: 'ss1', text: 'Subsection 1' },
+          { tag: 'h4', id: 'd1', text: 'Detail 1' },
+        ],
+      });
+      reinitMobileToc();
+
+      const observer = mockObserverInstances[0];
+      expect(observer.observedElements.size).toBe(4);
+    });
+
+    it('should only observe h2-h4 when content has no h1', () => {
+      buildPostDOM({
+        headings: [
+          { tag: 'h2', id: 'a', text: 'A' },
+          { tag: 'h3', id: 'b', text: 'B' },
+          { tag: 'h4', id: 'c', text: 'C' },
+        ],
+      });
+      reinitMobileToc();
+
+      const observer = mockObserverInstances[0];
+      expect(observer.observedElements.size).toBe(3);
+
+      // Verify h2, h3, h4 are observed
+      expect(observer.observedElements.has(document.getElementById('a')!)).toBe(true);
+      expect(observer.observedElements.has(document.getElementById('b')!)).toBe(true);
+      expect(observer.observedElements.has(document.getElementById('c')!)).toBe(true);
+    });
+  });
+
   // ── Ribbon visibility ────────────────────────────────────────────
 
   describe('Ribbon visibility', () => {

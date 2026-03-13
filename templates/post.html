@@ -127,7 +127,16 @@
           var container = document.getElementById('toc-container');
           var list = document.getElementById('toc-links-list');
           if (!content || !container || !list) return;
-          var headings = content.querySelectorAll('h2, h3, h4');
+          // Detect if body content uses h1 — if so, include h1 in TOC
+          var hasH1 = content.querySelector('h1') !== null;
+          var selector = hasH1 ? 'h1, h2, h3, h4' : 'h2, h3, h4';
+          var headings = content.querySelectorAll(selector);
+          // Compute actual minimum heading level (handles h3-only posts etc.)
+          var minLevel = 9;
+          headings.forEach(function(h) {
+            var lvl = parseInt(h.tagName[1], 10);
+            if (lvl < minLevel) minLevel = lvl;
+          });
           if (headings.length === 0) { container.style.display = 'none'; return; }
           var used = {};
           headings.forEach(function(h) {
@@ -140,18 +149,35 @@
             }
             used[h.id] = true;
           });
+          var subIndent = ['', 'toc-indent-1', 'toc-indent-2'];
           var frag = document.createDocumentFragment();
+          var topLi = null;
+          var groupUl = null;
           headings.forEach(function(h) {
             var depth = parseInt(h.tagName[1], 10);
-            var li = document.createElement('li');
-            if (depth === 3) li.className = 'ml-4';
-            if (depth === 4) li.className = 'ml-8';
+            var indent = depth - minLevel;
             var a = document.createElement('a');
             a.href = '#' + h.id;
             a.textContent = h.textContent.trim();
             a.className = 'no-heti toc-links-h' + depth;
-            li.appendChild(a);
-            frag.appendChild(li);
+            if (indent === 0) {
+              groupUl = null;
+              topLi = document.createElement('li');
+              topLi.appendChild(a);
+              frag.appendChild(topLi);
+            } else {
+              if (!groupUl) {
+                groupUl = document.createElement('ul');
+                groupUl.className = 'no-heti toc-sub-group';
+                if (topLi) { topLi.appendChild(groupUl); }
+                else { var w = document.createElement('li'); w.appendChild(groupUl); frag.appendChild(w); }
+              }
+              var li = document.createElement('li');
+              var rel = indent - 1;
+              if (rel > 0 && rel < subIndent.length) li.className = subIndent[rel];
+              li.appendChild(a);
+              groupUl.appendChild(li);
+            }
           });
           list.appendChild(frag);
           container.removeAttribute('data-toc-pending');
