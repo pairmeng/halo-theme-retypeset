@@ -32,16 +32,16 @@ function zoomIn(img: HTMLImageElement) {
     return;
   }
 
+  // Disable scrolling and get position
   document.body.style.overflow = 'hidden';
   const rect = img.getBoundingClientRect();
   originalImg = img;
 
-  // Use natural dimensions for correct aspect ratio (CSS may distort via aspect-ratio/object-fit)
   const natW = img.naturalWidth;
   const natH = img.naturalHeight;
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  const scaleFactor = viewportWidth < 768 ? 1 : 0.8;
+  const scaleFactor = window.innerWidth < 768 ? 1 : 0.8;
   const isLongImage = natH / natW > 1.8;
 
   // Clone and setup image
@@ -51,7 +51,7 @@ function zoomIn(img: HTMLImageElement) {
   zoomedImg.removeAttribute('loading');
 
   if (isLongImage) {
-    // Long image: scale to viewport width, scroll vertically
+    // Long image mode: scale to viewport width, scroll vertically, slide-up animation
     const targetW = viewportWidth * scaleFactor;
     const targetH = targetW * (natH / natW);
     const SCROLL_PADDING = 32;
@@ -62,6 +62,7 @@ function zoomIn(img: HTMLImageElement) {
     zoomedImg.style.left = `${(viewportWidth - targetW) / 2}px`;
     zoomedImg.style.width = `${targetW}px`;
     zoomedImg.style.height = `${targetH}px`;
+    zoomedImg.style.transform = 'translateY(30px)';
     overlay.appendChild(zoomedImg);
 
     overlay.style.display = 'block';
@@ -69,11 +70,13 @@ function zoomIn(img: HTMLImageElement) {
 
     requestAnimationFrame(() => {
       if (overlay) overlay.style.opacity = '1';
-      if (zoomedImg) zoomedImg.style.opacity = '1';
+      if (zoomedImg) {
+        zoomedImg.style.opacity = '1';
+        zoomedImg.style.transform = 'translateY(0)';
+      }
     });
   } else {
-    // Normal image: animate from rect position to viewport center
-    // Start at displayed rect bounds
+    // Normal image mode: original elegant transform animation
     zoomedImg.style.top = `${rect.top}px`;
     zoomedImg.style.left = `${rect.left}px`;
     zoomedImg.style.width = `${rect.width}px`;
@@ -83,22 +86,21 @@ function zoomIn(img: HTMLImageElement) {
     overlay.style.display = 'block';
     overlay.focus();
 
-    // Calculate target: fit natural ratio image to viewport
+    // Calculate scale and position (original algorithm)
     const scale = Math.min(
-      (viewportWidth * scaleFactor) / natW,
-      (viewportHeight * scaleFactor) / natH,
+      (viewportWidth * scaleFactor) / rect.width,
+      (viewportHeight * scaleFactor) / rect.height,
     );
-    const targetW = natW * scale;
-    const targetH = natH * scale;
+    const translateX = (-rect.left + (viewportWidth - rect.width) / 2) / scale;
+    const translateY = (-rect.top + (viewportHeight - rect.height) / 2) / scale;
 
-    // Animate to centered target via top/left/width/height transition
+    // Start animation
     requestAnimationFrame(() => {
-      if (overlay) overlay.style.opacity = '1';
+      if (overlay) {
+        overlay.style.opacity = '1';
+      }
       if (zoomedImg) {
-        zoomedImg.style.top = `${(viewportHeight - targetH) / 2}px`;
-        zoomedImg.style.left = `${(viewportWidth - targetW) / 2}px`;
-        zoomedImg.style.width = `${targetW}px`;
-        zoomedImg.style.height = `${targetH}px`;
+        zoomedImg.style.transform = `scale(${scale}) translate3d(${translateX}px, ${translateY}px, 0)`;
       }
     });
   }
@@ -119,13 +121,10 @@ function zoomOut() {
     overlay.classList.remove('zoom-scroll');
     overlay.scrollTop = 0;
     zoomedImg.style.opacity = '0';
+    zoomedImg.style.transform = 'translateY(30px)';
   } else {
-    // Animate back to original position
-    const rect = originalImg.getBoundingClientRect();
-    zoomedImg.style.top = `${rect.top}px`;
-    zoomedImg.style.left = `${rect.left}px`;
-    zoomedImg.style.width = `${rect.width}px`;
-    zoomedImg.style.height = `${rect.height}px`;
+    // Original: reset transform to animate back to initial position
+    zoomedImg.style.transform = '';
   }
 
   // Define cleanup logic
