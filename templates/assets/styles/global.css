@@ -57,17 +57,36 @@ h4:hover .heading-anchor-link svg:hover {
 .zoom-overlay {
   --at-apply: 'fixed left-0 top-0 z-999 hidden h-full w-full cursor-zoom-out bg-background/95 op-0 transition-opacity duration-300';
 }
+.zoom-overlay::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, oklch(var(--un-preset-theme-colors-background) / 0.95));
+  pointer-events: none;
+  z-index: 1001;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+.zoom-overlay.zoom-show-gradient::after {
+  opacity: 1;
+}
 .zoom-overlay.zoom-scroll {
   overflow-y: auto;
-  padding-bottom: 2rem;
+  -webkit-overflow-scrolling: touch;
+}
+.zoom-scroll-spacer {
+  height: 48px;
+  pointer-events: none;
 }
 .zoom-img {
   --at-apply: 'fixed z-1000 cursor-zoom-out transition-transform duration-300';
 }
-.zoom-scroll .zoom-img {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+.zoom-img-long {
+  --at-apply: 'absolute z-1000 cursor-zoom-out rd-0.5 transition-transform duration-300';
+  box-shadow: 0 2px 24px oklch(var(--un-preset-theme-colors-secondary) / 0.06);
 }
 
 /* Code Copy Button >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */

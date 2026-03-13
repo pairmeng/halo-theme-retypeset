@@ -1,11 +1,48 @@
 /**
  * Image Zoom Component
- * Provides click-to-zoom functionality for images
+ * Provides click-to-zoom functionality for images.
+ * Normal images: fly-to-center transform animation.
+ * Long images (ratio > 1.8): single-phase fly-in + scrollable overlay.
  */
 
 let overlay: HTMLDivElement | null = null;
 let zoomedImg: HTMLImageElement | null = null;
 let originalImg: HTMLImageElement | null = null;
+let isScrollMode = false;
+
+const LONG_IMAGE_RATIO = 1.8;
+const LONG_IMAGE_MAX_WIDTH = 500;
+const LONG_IMAGE_SCROLL_PADDING = 32;
+
+interface LongTarget {
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
+
+// Compute target layout for long image
+function longTarget(natW: number, natH: number, vw: number): LongTarget {
+  const w = Math.min(LONG_IMAGE_MAX_WIDTH, vw < 768 ? vw - 32 : vw * 0.5);
+  const h = w * (natH / natW);
+  return { w, h, x: (vw - w) / 2, y: LONG_IMAGE_SCROLL_PADDING };
+}
+
+// Compute translate() scale() transform from final position to rect
+function longTransform(rect: DOMRect, tgt: LongTarget): string {
+  const sx = rect.width / tgt.w;
+  const sy = rect.height / tgt.h;
+  const tx = (rect.left + rect.width / 2) - (tgt.x + tgt.w / 2);
+  const ty = (rect.top + rect.height / 2) - (tgt.y + tgt.h / 2);
+  return `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`;
+}
+
+// Handle scroll gradient visibility
+function onScrollGradient() {
+  if (!overlay) return;
+  const atBottom = overlay.scrollHeight - overlay.scrollTop - overlay.clientHeight < 80;
+  overlay.classList.toggle('zoom-show-gradient', !atBottom);
+}
 
 // Setup overlay element
 function setupOverlay() {
@@ -24,6 +61,7 @@ function cleanupZoom() {
   overlay = null;
   zoomedImg = null;
   originalImg = null;
+  isScrollMode = false;
 }
 
 // Zoom in the image
@@ -32,51 +70,68 @@ function zoomIn(img: HTMLImageElement) {
     return;
   }
 
-  // Disable scrolling and get position
   document.body.style.overflow = 'hidden';
   const rect = img.getBoundingClientRect();
   originalImg = img;
 
   const natW = img.naturalWidth;
   const natH = img.naturalHeight;
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-  const scaleFactor = window.innerWidth < 768 ? 1 : 0.8;
-  const isLongImage = natH / natW > 1.8;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const isLong = natH / natW > LONG_IMAGE_RATIO;
 
   // Clone and setup image
   zoomedImg = img.cloneNode() as HTMLImageElement;
-  zoomedImg.className = 'zoom-img';
   zoomedImg.removeAttribute('id');
   zoomedImg.removeAttribute('loading');
 
-  if (isLongImage) {
-    // Long image mode: scale to viewport width, scroll vertically, slide-up animation
-    const targetW = viewportWidth * scaleFactor;
-    const targetH = targetW * (natH / natW);
-    const SCROLL_PADDING = 32;
+  if (isLong) {
+    // ═══ LONG IMAGE: single-phase fly-in + scroll ═══
+    // Image sits at final position from the start.
+    // Transform fakes it at the rect position.
+    // Animate to transform:none → after transition, enable scroll.
+    isScrollMode = true;
+    const tgt = longTarget(natW, natH, vw);
 
-    overlay.classList.add('zoom-scroll');
-    zoomedImg.style.position = 'absolute';
-    zoomedImg.style.top = `${SCROLL_PADDING}px`;
-    zoomedImg.style.left = `${(viewportWidth - targetW) / 2}px`;
-    zoomedImg.style.width = `${targetW}px`;
-    zoomedImg.style.height = `${targetH}px`;
-    zoomedImg.style.transform = 'translateY(30px)';
+    zoomedImg.className = 'zoom-img-long';
+    zoomedImg.style.top = `${tgt.y}px`;
+    zoomedImg.style.left = `${tgt.x}px`;
+    zoomedImg.style.width = `${tgt.w}px`;
+    zoomedImg.style.height = `${tgt.h}px`;
+    zoomedImg.style.transform = longTransform(rect, tgt);
+
+    // Bottom spacer for comfortable scroll end
+    const spacer = document.createElement('div');
+    spacer.className = 'zoom-scroll-spacer';
+
+    overlay.style.overflow = 'hidden';
     overlay.appendChild(zoomedImg);
-
+    overlay.appendChild(spacer);
     overlay.style.display = 'block';
     overlay.focus();
 
     requestAnimationFrame(() => {
       if (overlay) overlay.style.opacity = '1';
-      if (zoomedImg) {
-        zoomedImg.style.opacity = '1';
-        zoomedImg.style.transform = 'translateY(0)';
-      }
+      if (zoomedImg) zoomedImg.style.transform = 'none';
     });
+
+    // After fly-in completes: enable scrolling seamlessly
+    const onFlyInEnd = (e: TransitionEvent) => {
+      if (e.propertyName !== 'transform') return;
+      zoomedImg?.removeEventListener('transitionend', onFlyInEnd);
+      if (!zoomedImg || !isScrollMode || !overlay) return;
+
+      overlay.classList.add('zoom-scroll');
+      overlay.style.overflow = '';
+      overlay.classList.add('zoom-show-gradient');
+      overlay.addEventListener('scroll', onScrollGradient);
+    };
+    zoomedImg.addEventListener('transitionend', onFlyInEnd);
+
   } else {
-    // Normal image mode: original elegant transform animation
+    // ═══ NORMAL IMAGE: original elegant transform animation ═══
+    isScrollMode = false;
+    zoomedImg.className = 'zoom-img';
     zoomedImg.style.top = `${rect.top}px`;
     zoomedImg.style.left = `${rect.left}px`;
     zoomedImg.style.width = `${rect.width}px`;
@@ -86,19 +141,16 @@ function zoomIn(img: HTMLImageElement) {
     overlay.style.display = 'block';
     overlay.focus();
 
-    // Calculate scale and position (original algorithm)
+    const scaleFactor = vw < 768 ? 1 : 0.8;
     const scale = Math.min(
-      (viewportWidth * scaleFactor) / rect.width,
-      (viewportHeight * scaleFactor) / rect.height,
+      (vw * scaleFactor) / rect.width,
+      (vh * scaleFactor) / rect.height,
     );
-    const translateX = (-rect.left + (viewportWidth - rect.width) / 2) / scale;
-    const translateY = (-rect.top + (viewportHeight - rect.height) / 2) / scale;
+    const translateX = (-rect.left + (vw - rect.width) / 2) / scale;
+    const translateY = (-rect.top + (vh - rect.height) / 2) / scale;
 
-    // Start animation
     requestAnimationFrame(() => {
-      if (overlay) {
-        overlay.style.opacity = '1';
-      }
+      if (overlay) overlay.style.opacity = '1';
       if (zoomedImg) {
         zoomedImg.style.transform = `scale(${scale}) translate3d(${translateX}px, ${translateY}px, 0)`;
       }
@@ -112,43 +164,59 @@ function zoomOut() {
     return;
   }
 
-  // Start closing animation
-  overlay.style.opacity = '0';
-  document.body.style.overflow = '';
+  overlay.removeEventListener('scroll', onScrollGradient);
 
-  const isScrollMode = overlay.classList.contains('zoom-scroll');
   if (isScrollMode) {
-    overlay.classList.remove('zoom-scroll');
+    const rect = originalImg.getBoundingClientRect();
+    const natW = originalImg.naturalWidth;
+    const natH = originalImg.naturalHeight;
+    const tgt = longTarget(natW, natH, window.innerWidth);
+    const scrollTop = overlay.scrollTop;
+
+    // Disable scroll for close animation
+    overlay.classList.remove('zoom-scroll', 'zoom-show-gradient');
+    overlay.style.overflow = 'hidden';
     overlay.scrollTop = 0;
-    zoomedImg.style.opacity = '0';
-    zoomedImg.style.transform = 'translateY(30px)';
+
+    // Fly back: adjust target for scroll offset
+    const adjustedTgt: LongTarget = { ...tgt, y: tgt.y - scrollTop };
+    overlay.style.opacity = '0';
+    zoomedImg.style.transform = longTransform(rect, adjustedTgt);
+    isScrollMode = false;
   } else {
-    // Original: reset transform to animate back to initial position
+    overlay.style.opacity = '0';
     zoomedImg.style.transform = '';
   }
 
-  // Define cleanup logic
-  const cleanup = () => {
-    if (!zoomedImg) {
-      return;
-    }
+  document.body.style.overflow = '';
 
-    // Remove zoomed image
-    zoomedImg?.remove();
+  // Cleanup after animation
+  const cleanup = () => {
+    if (!zoomedImg) return;
+
+    zoomedImg.remove();
     zoomedImg = null;
 
-    // Hide overlay
+    // Remove spacer if any
+    const spacer = overlay?.querySelector('.zoom-scroll-spacer');
+    if (spacer) spacer.remove();
+
     if (overlay) {
+      overlay.classList.remove('zoom-scroll', 'zoom-show-gradient');
       overlay.style.display = 'none';
+      overlay.style.overflow = '';
     }
 
-    // Restore focus
     originalImg?.focus();
     originalImg = null;
   };
 
-  // Listen for transition end to cleanup
-  zoomedImg.addEventListener('transitionend', cleanup, { once: true });
+  zoomedImg.addEventListener('transitionend', (e) => {
+    if (e.propertyName === 'transform') cleanup();
+  }, { once: true });
+
+  // Fallback in case transitionend doesn't fire
+  setTimeout(cleanup, 400);
 }
 
 // Handle click events
@@ -177,9 +245,17 @@ function handleClick(event: MouseEvent) {
   zoomIn(target);
 }
 
+// Handle keyboard events
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && zoomedImg) {
+    zoomOut();
+  }
+}
+
 export function initImageZoom() {
   setupOverlay();
   document.addEventListener('click', handleClick);
+  document.addEventListener('keydown', handleKeydown);
   window.addEventListener('resize', zoomOut);
 }
 
