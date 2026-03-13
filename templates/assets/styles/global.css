@@ -164,20 +164,20 @@ html.dark {
 a:target-current {
   --at-apply: '2xl:(c-primary font-medium)';
 }
-.toc-sub-group {
+ul.toc-sub-group {
   list-style: none;
   padding: 0 0 0 10px;
   margin: 6px 0 0 3px;
   border-left: 1.5px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.2);
   transition: border-color 0.2s ease-out;
 }
-.toc-sub-group > li + li {
+ul.toc-sub-group > li + li {
   margin-top: 5px;
 }
-.toc-sub-group:has(a:target-current) {
+ul.toc-sub-group:has(a:target-current) {
   border-left-color: oklch(var(--un-preset-theme-colors-primary) / 0.35);
 }
-.toc-sub-group li {
+ul.toc-sub-group li {
   list-style: none;
 }
 .toc-indent-1 { margin-left: 12px; }
