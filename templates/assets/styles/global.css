@@ -167,10 +167,10 @@ a:target-current {
 .toc-sub-group {
   list-style: none;
   padding: 0 0 0 0.75rem;
-  margin: 0.3rem 0 0 0.3rem;
+  margin: 0.5rem 0 0 0.3rem;
   border-left: 1.5px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.2);
   transition: border-color 0.2s ease-out;
-  --at-apply: 'space-y-1.1 2xl:space-y-1';
+  --at-apply: 'space-y-1.5 2xl:space-y-1.25';
 }
 .toc-sub-group:has(a:target-current) {
   border-left-color: oklch(var(--un-preset-theme-colors-primary) / 0.35);

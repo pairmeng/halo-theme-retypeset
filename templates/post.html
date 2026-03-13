@@ -130,8 +130,13 @@
           // Detect if body content uses h1 — if so, include h1 in TOC
           var hasH1 = content.querySelector('h1') !== null;
           var selector = hasH1 ? 'h1, h2, h3, h4' : 'h2, h3, h4';
-          var minLevel = hasH1 ? 1 : 2;
           var headings = content.querySelectorAll(selector);
+          // Compute actual minimum heading level (handles h3-only posts etc.)
+          var minLevel = 9;
+          headings.forEach(function(h) {
+            var lvl = parseInt(h.tagName[1], 10);
+            if (lvl < minLevel) minLevel = lvl;
+          });
           if (headings.length === 0) { container.style.display = 'none'; return; }
           var used = {};
           headings.forEach(function(h) {
