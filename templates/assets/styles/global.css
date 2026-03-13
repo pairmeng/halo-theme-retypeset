@@ -57,8 +57,36 @@ h4:hover .heading-anchor-link svg:hover {
 .zoom-overlay {
   --at-apply: 'fixed left-0 top-0 z-999 hidden h-full w-full cursor-zoom-out bg-background/95 op-0 transition-opacity duration-300';
 }
+.zoom-overlay::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(transparent, oklch(var(--un-preset-theme-colors-background) / 0.95));
+  pointer-events: none;
+  z-index: 1001;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+.zoom-overlay.zoom-show-gradient::after {
+  opacity: 1;
+}
+.zoom-overlay.zoom-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.zoom-scroll-spacer {
+  height: 48px;
+  pointer-events: none;
+}
 .zoom-img {
   --at-apply: 'fixed z-1000 cursor-zoom-out transition-transform duration-300';
+}
+.zoom-img-long {
+  --at-apply: 'absolute z-1000 cursor-zoom-out rd-0.5 transition-transform duration-300';
+  box-shadow: 0 2px 24px oklch(var(--un-preset-theme-colors-secondary) / 0.06);
 }
 
 /* Code Copy Button >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
@@ -470,6 +498,133 @@ html.dark .toc-overlay.open {
 }
 .post-tags a:hover {
   --at-apply: 'c-primary';
+}
+
+/* Moments >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+.moment-item {
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.12);
+}
+.moment-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.moment-date {
+  display: inline-block;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  --at-apply: 'font-time text-3.25 c-secondary/35 lg:text-3.4';
+}
+.moment-content {
+  margin-top: 0.5em;
+  line-height: 1.85;
+  --at-apply: 'c-secondary';
+}
+.moment-content p {
+  margin: 0.4em 0;
+}
+.moment-content p:first-child {
+  margin-top: 0;
+}
+.moment-content p:last-child {
+  margin-bottom: 0;
+}
+.moment-content a {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  transition: color 0.2s ease-out;
+  --at-apply: 'c-primary/80';
+}
+.moment-content a:hover {
+  --at-apply: 'c-primary';
+}
+.moment-media {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.moment-media[data-count="1"] {
+  grid-template-columns: 1fr;
+  max-width: 24rem;
+}
+.moment-media[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 28rem;
+}
+.moment-media[data-count="3"],
+.moment-media[data-count] {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 32rem;
+}
+@media (max-width: 1023px) {
+  .moment-media[data-count="3"],
+  .moment-media[data-count] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.moment-media img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  cursor: zoom-in;
+  transition: opacity 0.2s ease-out;
+}
+.moment-media img:hover {
+  opacity: 0.85;
+}
+.moment-media video,
+.moment-media audio {
+  width: 100%;
+  border-radius: 0.375rem;
+  margin-top: 0.25rem;
+}
+.moment-tags {
+  overflow: hidden;
+  line-height: 2;
+  margin-bottom: 2.25rem;
+}
+.moment-tags-inner {
+  display: block;
+  margin-left: -1em;
+}
+.moment-tags a {
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.2s ease-out;
+  --at-apply: 'c-secondary/50 text-3.5 lg:text-3.65';
+}
+.moment-tags a::before {
+  content: '·';
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  --at-apply: 'c-secondary/20';
+}
+.moment-tags a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  --at-apply: 'c-primary';
+}
+.moment-tags a:hover::before {
+  text-decoration: none;
+  --at-apply: 'c-secondary/20';
+}
+.moment-tags a.tag-active {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  --at-apply: 'c-primary font-semibold';
+}
+.moment-tags a.tag-active::before {
+  text-decoration: none;
+  --at-apply: 'c-secondary/20';
+}
+.moment-empty {
+  padding: 3rem 0;
+  text-align: center;
+  --at-apply: 'c-secondary/40';
 }
 
 /* Scroll to top button animation >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
