@@ -166,8 +166,8 @@ a:target-current {
 }
 .toc-sub-group {
   list-style: none;
-  padding: 0 0 0 0.75rem;
-  margin: 0.5rem 0 0 0.3rem;
+  padding: 0 0 0 0.55rem;
+  margin: 0.5rem 0 0 0.2rem;
   border-left: 1.5px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.2);
   transition: border-color 0.2s ease-out;
   --at-apply: 'space-y-1.5 2xl:space-y-1.25';
