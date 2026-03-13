@@ -168,11 +168,18 @@ a:target-current {
   list-style: none;
   padding: 0 0 0 0.75rem;
   margin: 0.3rem 0 0 0.3rem;
-  border-left: 1px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.15);
+  border-left: 1.5px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.2);
+  transition: border-color 0.2s ease-out;
   --at-apply: 'space-y-1.1 2xl:space-y-1';
 }
+.toc-sub-group:has(a:target-current) {
+  border-left-color: oklch(var(--un-preset-theme-colors-primary) / 0.35);
+}
+.toc-sub-group li {
+  list-style: none;
+}
 .toc-links-h1, .toc-links-h2, .toc-links-h3, .toc-links-h4 {
-  --at-apply: 'text-balance text-sm font-normal no-underline after:bottom-0.15em 2xl:(text-3.2 c-secondary/80 hover:c-primary hover:font-medium)';
+  --at-apply: 'text-sm font-normal no-underline after:bottom-0.15em 2xl:(block truncate text-3.2 c-secondary/80 hover:c-primary hover:font-medium)';
   transition: color 0.15s ease-out, font-weight 0.15s ease-out;
 }
 #toc-toggle:checked ~ #toc-accordion-wrapper #toc-accordion-content {
