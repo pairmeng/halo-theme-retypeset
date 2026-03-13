@@ -231,8 +231,8 @@ function handleClick(event: MouseEvent) {
     return;
   }
 
-  // Ignore small or incomplete images
-  if (!target.complete || target.width < 100 || target.height < 100) {
+  // Ignore incomplete or icon-sized images (< 50px)
+  if (!target.complete || target.width < 50 || target.height < 50) {
     return;
   }
 
