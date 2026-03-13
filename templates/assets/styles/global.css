@@ -166,11 +166,13 @@ a:target-current {
 }
 .toc-sub-group {
   list-style: none;
-  padding: 0 0 0 0.55rem;
-  margin: 0.5rem 0 0 0.2rem;
+  padding: 0 0 0 10px;
+  margin: 6px 0 0 3px;
   border-left: 1.5px dashed oklch(var(--un-preset-theme-colors-secondary) / 0.2);
   transition: border-color 0.2s ease-out;
-  --at-apply: 'space-y-1.5 2xl:space-y-1.25';
+}
+.toc-sub-group > li + li {
+  margin-top: 5px;
 }
 .toc-sub-group:has(a:target-current) {
   border-left-color: oklch(var(--un-preset-theme-colors-primary) / 0.35);
@@ -178,6 +180,8 @@ a:target-current {
 .toc-sub-group li {
   list-style: none;
 }
+.toc-indent-1 { margin-left: 12px; }
+.toc-indent-2 { margin-left: 24px; }
 .toc-links-h1, .toc-links-h2, .toc-links-h3, .toc-links-h4 {
   --at-apply: 'text-sm font-normal no-underline after:bottom-0.15em 2xl:(block truncate text-3.2 c-secondary/80 hover:c-primary hover:font-medium)';
   transition: color 0.15s ease-out, font-weight 0.15s ease-out;
