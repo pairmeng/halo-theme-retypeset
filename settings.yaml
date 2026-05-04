@@ -133,6 +133,13 @@ spec:
     - group: sidebar
       label: 侧边栏
       formSchema:
+        - $formkit: number
+          name: desktop_offset
+          label: 桌面侧边栏间距
+          value: 11.25
+          min: 0
+          step: 0.25
+          help: 控制侧边栏与正文之间的水平距离，单位 rem，默认 11.25
         - $formkit: checkbox
           name: show_site_header
           label: 显示站点标题

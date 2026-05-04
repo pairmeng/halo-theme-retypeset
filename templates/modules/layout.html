@@ -18,18 +18,21 @@
     t_site_nav=${lang == 'en' ? 'Site Navigation' : '站点导航'},
     sidebarShowHeader=${theme.config.sidebar == null or theme.config.sidebar.show_site_header != false},
     sidebarShowSubtitle=${theme.config.sidebar == null or theme.config.sidebar.show_site_subtitle != false},
+    layoutDirection=${theme.config.general.layout_direction ?: 'right'},
     sidebarNavigationMode=${theme.config.sidebar != null ? (theme.config.sidebar.navigation_mode ?: 'default') : 'default'},
     sidebarShowFooter=${theme.config.sidebar == null or theme.config.sidebar.show_footer != false},
     sidebarShowSocialLinks=${theme.config.sidebar == null or theme.config.sidebar.show_social_links != false},
     sidebarShowCopyright=${theme.config.sidebar == null or theme.config.sidebar.show_copyright != false},
     sidebarShowIcp=${theme.config.sidebar == null or theme.config.sidebar.show_icp != false},
     sidebarShowPoweredBy=${theme.config.sidebar == null or theme.config.sidebar.show_powered_by != false},
+    sidebarDesktopOffset=${theme.config.sidebar != null and !#strings.isEmpty(theme.config.sidebar.desktop_offset) ? theme.config.sidebar.desktop_offset : 11.25},
     useLogoImage=${theme.config.general.logo_type == 'image' and not #strings.isEmpty(site.logo)},
     hasMomentsPlugin=${pluginFinder.available('PluginMoments')}
   "
   th:lang="${lang == 'en' ? 'en' : 'zh-CN'}"
   th:fragment="html (title, content, head, footer, sidebar, contentClass, isPostPage)"
-  th:attr="data-layout=${theme.config.general.layout_direction ?: 'right'}"
+  th:attr="data-layout=${layoutDirection}"
+  th:style="${'--layout-sidebar-gap:' + sidebarDesktopOffset + 'rem'}"
   th:classappend="${(theme.config.general.font_style == 'serif' ? 'font-serif' : 'font-sans') + (isPostPage ? ' scroll-smooth' : '')}"
 >
   <head>

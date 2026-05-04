@@ -231,21 +231,40 @@ ul.toc-sub-group li {
 
 /* Layout direction (CSS custom properties) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 :root {
-  --layout-sidebar-right: max(5rem, calc(50vw - 35rem));
+  --layout-content-width: min(calc(75vw - 16rem), 44rem);
+  --layout-sidebar-width: 14rem;
+  --layout-sidebar-gap: 11.25rem;
+  --layout-sidebar-gap-safe: max(
+    1rem,
+    min(
+      var(--layout-sidebar-gap),
+      calc(100vw - var(--layout-content-width) - var(--layout-sidebar-width) - 10rem)
+    )
+  );
+  --layout-group-gutter: max(
+    5rem,
+    calc(
+      (100vw - var(--layout-content-width) - var(--layout-sidebar-width) - var(--layout-sidebar-gap-safe)) / 2
+    )
+  );
+  --layout-sidebar-right: var(--layout-group-gutter);
   --layout-sidebar-left: auto;
-  --layout-content-ml: max(5.75rem, calc(50vw - 34.25rem));
-  --layout-content-mr: max(5.75rem, calc(50vw - 34.25rem));
-  --layout-btn-right: max(5rem, calc(50vw - 35rem));
+  --layout-content-ml: var(--layout-group-gutter);
+  --layout-content-mr: auto;
+  --layout-btn-right: var(--layout-sidebar-right);
   --layout-btn-left: auto;
   --layout-toc-left: 0;
   --layout-toc-right: auto;
 }
 [data-layout="left"] {
   --layout-sidebar-right: auto;
-  --layout-sidebar-left: max(5rem, calc(50vw - 35rem));
-  --layout-content-ml: max(5.75rem, calc(50vw - 9.75rem));
+  --layout-sidebar-left: var(--layout-group-gutter);
+  --layout-content-ml: calc(
+    var(--layout-group-gutter) + var(--layout-sidebar-width) + var(--layout-sidebar-gap-safe)
+  );
+  --layout-content-mr: auto;
   --layout-btn-right: auto;
-  --layout-btn-left: max(5rem, calc(50vw - 35rem));
+  --layout-btn-left: var(--layout-sidebar-left);
   --layout-toc-left: auto;
   --layout-toc-right: 0;
 }
@@ -255,6 +274,8 @@ ul.toc-sub-group li {
     left: var(--layout-sidebar-left);
   }
   body .content-wrapper {
+    width: var(--layout-content-width);
+    max-width: var(--layout-content-width);
     margin-left: var(--layout-content-ml);
     margin-right: var(--layout-content-mr);
   }
