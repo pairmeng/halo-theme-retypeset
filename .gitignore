@@ -12,6 +12,7 @@ dist/
 
 # Local agent guidance
 AGENTS.md
+CLAUDE.md
 
 # OS
 .DS_Store
