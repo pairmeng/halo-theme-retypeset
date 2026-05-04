@@ -247,6 +247,14 @@ function syncHtmlElement(newDoc: Document): void {
   oldHtml.classList.toggle('dark', isDark);
   oldHtml.classList.toggle('reduce-motion', isReduceMotion);
 
+  // Sync layout sidebar gap from the new page (set via th:style on <html>),
+  // otherwise it stays stale after SPA navigation when the admin changes
+  // desktop_offset in theme settings.
+  const newGap = newHtml.style.getPropertyValue('--layout-sidebar-gap');
+  if (newGap) {
+    oldHtml.style.setProperty('--layout-sidebar-gap', newGap);
+  }
+
   if (newHtml.lang) oldHtml.lang = newHtml.lang;
 }
 

@@ -25,7 +25,7 @@
     sidebarShowCopyright=${theme.config.sidebar == null or theme.config.sidebar.show_copyright != false},
     sidebarShowIcp=${theme.config.sidebar == null or theme.config.sidebar.show_icp != false},
     sidebarShowPoweredBy=${theme.config.sidebar == null or theme.config.sidebar.show_powered_by != false},
-    sidebarDesktopOffset=${theme.config.sidebar != null and !#strings.isEmpty(theme.config.sidebar.desktop_offset) ? theme.config.sidebar.desktop_offset : 11.25},
+    sidebarDesktopOffset=${theme.config.sidebar?.desktop_offset != null ? theme.config.sidebar.desktop_offset : 11.25},
     useLogoImage=${theme.config.general.logo_type == 'image' and not #strings.isEmpty(site.logo)},
     hasMomentsPlugin=${pluginFinder.available('PluginMoments')}
   "
