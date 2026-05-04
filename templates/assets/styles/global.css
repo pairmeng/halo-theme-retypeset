@@ -233,40 +233,51 @@ ul.toc-sub-group li {
 :root {
   --layout-content-width: min(calc(75vw - 16rem), 44rem);
   --layout-sidebar-width: 14rem;
+  --layout-toc-width: 0rem;
+  --layout-toc-gap: 0rem;
+  --layout-min-edge-gutter: 5rem;
   --layout-sidebar-gap: 11.25rem;
   --layout-sidebar-gap-safe: max(
     1rem,
     min(
       var(--layout-sidebar-gap),
-      calc(100vw - var(--layout-content-width) - var(--layout-sidebar-width) - 10rem)
+      calc(
+        100vw - var(--layout-content-width) - var(--layout-sidebar-width) -
+          var(--layout-toc-width) - var(--layout-toc-gap) -
+          var(--layout-min-edge-gutter) - var(--layout-min-edge-gutter)
+      )
     )
+  );
+  --layout-group-width: calc(
+    var(--layout-toc-width) + var(--layout-toc-gap) + var(--layout-content-width) +
+      var(--layout-sidebar-gap-safe) + var(--layout-sidebar-width)
   );
   --layout-group-gutter: max(
-    5rem,
-    calc(
-      (100vw - var(--layout-content-width) - var(--layout-sidebar-width) - var(--layout-sidebar-gap-safe)) / 2
-    )
+    var(--layout-min-edge-gutter),
+    calc((100vw - var(--layout-group-width)) / 2)
   );
-  --layout-sidebar-right: var(--layout-group-gutter);
-  --layout-sidebar-left: auto;
-  --layout-content-ml: var(--layout-group-gutter);
-  --layout-content-mr: auto;
-  --layout-btn-right: var(--layout-sidebar-right);
-  --layout-btn-left: auto;
-  --layout-toc-left: 0;
+  --layout-toc-left: var(--layout-group-gutter);
   --layout-toc-right: auto;
+  --layout-content-ml: calc(var(--layout-group-gutter) + var(--layout-toc-width) + var(--layout-toc-gap));
+  --layout-content-mr: auto;
+  --layout-sidebar-left: calc(
+    var(--layout-content-ml) + var(--layout-content-width) + var(--layout-sidebar-gap-safe)
+  );
+  --layout-sidebar-right: auto;
+  --layout-btn-left: var(--layout-sidebar-left);
+  --layout-btn-right: auto;
 }
 [data-layout="left"] {
-  --layout-sidebar-right: auto;
   --layout-sidebar-left: var(--layout-group-gutter);
+  --layout-sidebar-right: auto;
   --layout-content-ml: calc(
     var(--layout-group-gutter) + var(--layout-sidebar-width) + var(--layout-sidebar-gap-safe)
   );
   --layout-content-mr: auto;
-  --layout-btn-right: auto;
   --layout-btn-left: var(--layout-sidebar-left);
-  --layout-toc-left: auto;
-  --layout-toc-right: 0;
+  --layout-btn-right: auto;
+  --layout-toc-left: calc(var(--layout-content-ml) + var(--layout-content-width) + var(--layout-toc-gap));
+  --layout-toc-right: auto;
 }
 @media (min-width: 1024px) {
   .sidebar-column {
@@ -285,7 +296,13 @@ ul.toc-sub-group li {
   }
 }
 @media (min-width: 1536px) {
+  :root {
+    --layout-toc-width: min(max(10rem, calc(50vw - 38rem)), 13rem);
+    --layout-toc-gap: 4rem;
+  }
   #toc-container {
+    width: var(--layout-toc-width);
+    max-width: var(--layout-toc-width);
     left: var(--layout-toc-left);
     right: var(--layout-toc-right);
   }
