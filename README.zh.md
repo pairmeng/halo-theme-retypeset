@@ -22,6 +22,8 @@
 ## 功能特性
 
 - 浅色 / 深色模式，支持跟随系统偏好
+- 自定义浅色和深色配色
+- 可配置侧边栏导航和底部信息
 - 优雅的页面过渡动画与元素形变效果
 - 基于 [heti](https://github.com/sivan/heti) 的中文排版优化
 - 自动生成文章目录
@@ -70,3 +72,4 @@ pnpm build
 
 原主题版权所有 (c) 2025 [radishzz](https://github.com/radishzzz)。
 Halo 移植版版权所有 (c) 2025 [picsky](https://github.com/picsky)。
+二次开发版权所有 (c) 2026 paimon。

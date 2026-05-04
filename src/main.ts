@@ -16,7 +16,19 @@ interface ThemeSettings {
   colorMode: 'light' | 'dark' | 'system';
   fontStyle: 'sans' | 'serif';
   enableTransition: boolean;
+  customColors: {
+    enabled: boolean;
+    light: ThemePalette;
+    dark: ThemePalette;
+  };
   customCss: string;
+}
+
+interface ThemePalette {
+  primary: string;
+  secondary: string;
+  background: string;
+  highlight: string;
 }
 
 function getThemeSettings(): ThemeSettings {
@@ -32,6 +44,21 @@ function getThemeSettings(): ThemeSettings {
     colorMode: 'system',
     fontStyle: 'sans',
     enableTransition: true,
+    customColors: {
+      enabled: false,
+      light: {
+        primary: '#403d42',
+        secondary: '#625d66',
+        background: '#f5f3f6',
+        highlight: '#f5d94f',
+      },
+      dark: {
+        primary: '#ece9ef',
+        secondary: '#c2bdc6',
+        background: '#302d33',
+        highlight: '#f5d94f',
+      },
+    },
     customCss: '',
   };
 }
@@ -39,13 +66,94 @@ function getThemeSettings(): ThemeSettings {
 const LIGHT_BG = 'oklch(96% 0.005 298)';
 const DARK_BG = 'oklch(22% 0.005 298)';
 
+function getThemeBackgrounds(): { light: string; dark: string } {
+  const settings = getThemeSettings();
+  if (!settings.customColors?.enabled) {
+    return { light: LIGHT_BG, dark: DARK_BG };
+  }
+  return {
+    light: settings.customColors.light?.background || LIGHT_BG,
+    dark: settings.customColors.dark?.background || DARK_BG,
+  };
+}
+
+function hexToRgb(hex: string): [number, number, number] | null {
+  let value = hex.trim();
+  if (value.startsWith('#')) value = value.slice(1);
+  if (value.length === 3) {
+    value = value.split('').map(c => c + c).join('');
+  }
+  if (!/^[0-9a-fA-F]{6}$/.test(value)) return null;
+  return [
+    parseInt(value.slice(0, 2), 16) / 255,
+    parseInt(value.slice(2, 4), 16) / 255,
+    parseInt(value.slice(4, 6), 16) / 255,
+  ];
+}
+
+function toLinear(value: number): number {
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+}
+
+function hexToOklchChannels(hex: string, alpha?: number): string | null {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return null;
+  const r = toLinear(rgb[0]);
+  const g = toLinear(rgb[1]);
+  const b = toLinear(rgb[2]);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const lightness = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s;
+  const a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s;
+  const bb = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+  const chroma = Math.sqrt(a * a + bb * bb);
+  let hue = Math.atan2(bb, a) * 180 / Math.PI;
+  if (hue < 0) hue += 360;
+  const channels = `${(lightness * 100).toFixed(3)}% ${chroma.toFixed(5)} ${hue.toFixed(3)}`;
+  return typeof alpha === 'number' ? `${channels} / ${alpha}` : channels;
+}
+
+function setThemeColorToken(name: string, color: string, alpha?: number): void {
+  const channels = hexToOklchChannels(color, alpha);
+  if (channels) {
+    document.documentElement.style.setProperty(`--un-preset-theme-colors-${name}`, channels);
+  }
+}
+
+function applyCustomColorTokens(isDark: boolean): void {
+  const settings = getThemeSettings();
+  if (!settings.customColors?.enabled) return;
+
+  const palette = isDark ? settings.customColors.dark : settings.customColors.light;
+  if (!palette) return;
+
+  setThemeColorToken('primary', palette.primary);
+  setThemeColorToken('secondary', palette.secondary);
+  setThemeColorToken('background', palette.background);
+  setThemeColorToken('highlight', palette.highlight, isDark ? 0.2 : 0.5);
+
+  const root = document.documentElement;
+  root.style.setProperty('--halo-search-widget-primary-color', palette.primary);
+  root.style.setProperty('--halo-search-widget-muted-color', palette.secondary);
+  root.style.setProperty('--halo-search-widget-content-color', palette.primary);
+  root.style.setProperty('--halo-search-widget-base-bg-color', palette.background);
+  root.style.setProperty('--halo-search-widget-modal-bg-color', palette.background);
+  root.style.setProperty('--halo-search-widget-modal-layer-color', `color-mix(in srgb, ${isDark ? palette.background : palette.primary} ${isDark ? '70%' : '30%'}, transparent)`);
+  root.style.setProperty('--halo-search-widget-hit-bg-color', `color-mix(in srgb, ${palette.background} 88%, ${isDark ? 'black' : palette.primary})`);
+  root.style.setProperty('--halo-search-widget-divider-color', `color-mix(in srgb, ${palette.secondary} 15%, transparent)`);
+  root.style.setProperty('--halo-search-widget-kbd-border-color', `color-mix(in srgb, ${palette.secondary} 25%, transparent)`);
+}
+
 // Apply theme changes (matches original Button.astro logic)
 function applyTheme(isDark: boolean): void {
   document.documentElement.classList.toggle('dark', isDark);
+  applyCustomColorTokens(isDark);
 
   const metaThemeColor = document.head.querySelector('meta[name="theme-color"]');
   if (metaThemeColor) {
-    metaThemeColor.setAttribute('content', isDark ? DARK_BG : LIGHT_BG);
+    const backgrounds = getThemeBackgrounds();
+    metaThemeColor.setAttribute('content', isDark ? backgrounds.dark : backgrounds.light);
   }
 
   localStorage.setItem('theme', isDark ? 'dark' : 'light');

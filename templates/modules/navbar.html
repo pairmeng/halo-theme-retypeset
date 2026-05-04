@@ -6,34 +6,47 @@
     class="sidebar-column mb-10.5 text-3.6 font-semibold leading-2.45em font-navbar lg:uno-desktop-column lg:text-4 lg:bottom-[min(9.04rem+3.85vw,12.5rem)] cjk:tracking-wide"
   >
     <ul>
-      <li>
-        <a
-          href="/"
-          th:class="${#strings.equals(_templateId, 'index') || isPostPage ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
-          th:text="${t_posts}"
-        ></a>
-      </li>
-      <li th:if="${hasMomentsPlugin}">
-        <a
-          href="/moments"
-          th:class="${#strings.equals(_templateId, 'moments') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
-          th:text="${t_moments}"
-        ></a>
-      </li>
-      <li>
-        <a
-          href="/tags"
-          th:class="${#strings.equals(_templateId, 'tags') || #strings.equals(_templateId, 'tag') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
-          th:text="${t_tags}"
-        ></a>
-      </li>
-      <li>
-        <a
-          href="/categories"
-          th:class="${#strings.equals(_templateId, 'categories') || #strings.equals(_templateId, 'category') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
-          th:text="${t_categories}"
-        ></a>
-      </li>
+      <th:block th:if="${sidebarNavigationMode == 'default' or sidebarNavigationMode == 'combined'}">
+        <li>
+          <a
+            href="/"
+            th:class="${#strings.equals(_templateId, 'index') || isPostPage ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
+            th:text="${t_posts}"
+          ></a>
+        </li>
+        <li th:if="${hasMomentsPlugin}">
+          <a
+            href="/moments"
+            th:class="${#strings.equals(_templateId, 'moments') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
+            th:text="${t_moments}"
+          ></a>
+        </li>
+        <li>
+          <a
+            href="/tags"
+            th:class="${#strings.equals(_templateId, 'tags') || #strings.equals(_templateId, 'tag') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
+            th:text="${t_tags}"
+          ></a>
+        </li>
+        <li>
+          <a
+            href="/categories"
+            th:class="${#strings.equals(_templateId, 'categories') || #strings.equals(_templateId, 'category') ? 'highlight-static c-primary font-bold after:bottom-0.7em' : 'highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold'}"
+            th:text="${t_categories}"
+          ></a>
+        </li>
+      </th:block>
+      <th:block th:if="${theme.config.sidebar != null and (sidebarNavigationMode == 'custom' or sidebarNavigationMode == 'combined') and theme.config.sidebar.custom_links != null}">
+        <li th:each="link : ${theme.config.sidebar.custom_links}" th:if="${link.enabled != false and !#strings.isEmpty(link.name) and !#strings.isEmpty(link.url)}">
+          <a
+            th:href="${link.url}"
+            th:text="${link.name}"
+            th:target="${link.new_window ? '_blank' : '_self'}"
+            th:rel="${link.new_window ? 'noopener noreferrer' : null}"
+            class="highlight-hover transition-[colors,font-weight] after:bottom-0.7em hover:c-primary hover:font-bold"
+          ></a>
+        </li>
+      </th:block>
     </ul>
   </nav>
 </th:block>

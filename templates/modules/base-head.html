@@ -1,8 +1,24 @@
-<th:block th:fragment="base-head(title, isPostPage)">
+<th:block
+  th:fragment="base-head(title, isPostPage)"
+  th:with="
+    customColorsEnabled=${theme.config.appearance != null and theme.config.appearance.enable_custom_colors},
+    lightPrimary=${theme.config.appearance != null ? (theme.config.appearance.light_primary ?: '#403d42') : '#403d42'},
+    lightSecondary=${theme.config.appearance != null ? (theme.config.appearance.light_secondary ?: '#625d66') : '#625d66'},
+    lightBackground=${theme.config.appearance != null ? (theme.config.appearance.light_background ?: '#f5f3f6') : '#f5f3f6'},
+    lightHighlight=${theme.config.appearance != null ? (theme.config.appearance.light_highlight ?: '#f5d94f') : '#f5d94f'},
+    darkPrimary=${theme.config.appearance != null ? (theme.config.appearance.dark_primary ?: '#ece9ef') : '#ece9ef'},
+    darkSecondary=${theme.config.appearance != null ? (theme.config.appearance.dark_secondary ?: '#c2bdc6') : '#c2bdc6'},
+    darkBackground=${theme.config.appearance != null ? (theme.config.appearance.dark_background ?: '#302d33') : '#302d33'},
+    darkHighlight=${theme.config.appearance != null ? (theme.config.appearance.dark_highlight ?: '#f5d94f') : '#f5d94f'}
+  "
+>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="oklch(96% 0.005 298)" />
+  <meta
+    name="theme-color"
+    th:content="${customColorsEnabled ? lightBackground : 'oklch(96% 0.005 298)'}"
+  />
   <title th:text="${title}"></title>
 
   <!-- Favicon -->
@@ -22,6 +38,77 @@
   <script th:inline="javascript">
     ;(function() {
       var colorMode = /*[[${theme.config.general.color_mode ?: 'system'}]]*/ 'system'
+      var customColors = /*[[${customColorsEnabled}]]*/ false
+      var palette = {
+        light: {
+          primary: /*[[${lightPrimary}]]*/ '#403d42',
+          secondary: /*[[${lightSecondary}]]*/ '#625d66',
+          background: /*[[${lightBackground}]]*/ '#f5f3f6',
+          highlight: /*[[${lightHighlight}]]*/ '#f5d94f',
+          highlightAlpha: 0.5
+        },
+        dark: {
+          primary: /*[[${darkPrimary}]]*/ '#ece9ef',
+          secondary: /*[[${darkSecondary}]]*/ '#c2bdc6',
+          background: /*[[${darkBackground}]]*/ '#302d33',
+          highlight: /*[[${darkHighlight}]]*/ '#f5d94f',
+          highlightAlpha: 0.2
+        }
+      }
+      function hexToRgb(hex) {
+        if (typeof hex !== 'string') return null
+        var value = hex.trim()
+        if (value[0] === '#') value = value.slice(1)
+        if (value.length === 3) value = value.split('').map(function(c) { return c + c }).join('')
+        if (!/^[0-9a-fA-F]{6}$/.test(value)) return null
+        return [
+          parseInt(value.slice(0, 2), 16) / 255,
+          parseInt(value.slice(2, 4), 16) / 255,
+          parseInt(value.slice(4, 6), 16) / 255
+        ]
+      }
+      function toLinear(value) {
+        return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4)
+      }
+      function hexToOklchChannels(hex, alpha) {
+        var rgb = hexToRgb(hex)
+        if (!rgb) return null
+        var r = toLinear(rgb[0])
+        var g = toLinear(rgb[1])
+        var b = toLinear(rgb[2])
+        var l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+        var m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+        var s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+        var L = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s
+        var a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+        var bb = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+        var C = Math.sqrt(a * a + bb * bb)
+        var H = Math.atan2(bb, a) * 180 / Math.PI
+        if (H < 0) H += 360
+        var channels = (L * 100).toFixed(3) + '% ' + C.toFixed(5) + ' ' + H.toFixed(3)
+        return typeof alpha === 'number' ? channels + ' / ' + alpha : channels
+      }
+      function setToken(name, color, alpha) {
+        var channels = hexToOklchChannels(color, alpha)
+        if (channels) document.documentElement.style.setProperty('--un-preset-theme-colors-' + name, channels)
+      }
+      function applyCustomPalette(isDark) {
+        if (!customColors) return
+        var colors = isDark ? palette.dark : palette.light
+        setToken('primary', colors.primary)
+        setToken('secondary', colors.secondary)
+        setToken('background', colors.background)
+        setToken('highlight', colors.highlight, colors.highlightAlpha)
+        document.documentElement.style.setProperty('--halo-search-widget-primary-color', colors.primary)
+        document.documentElement.style.setProperty('--halo-search-widget-muted-color', colors.secondary)
+        document.documentElement.style.setProperty('--halo-search-widget-content-color', colors.primary)
+        document.documentElement.style.setProperty('--halo-search-widget-base-bg-color', colors.background)
+        document.documentElement.style.setProperty('--halo-search-widget-modal-bg-color', colors.background)
+        document.documentElement.style.setProperty('--halo-search-widget-modal-layer-color', 'color-mix(in srgb, ' + (isDark ? colors.background : colors.primary) + ' ' + (isDark ? '70%' : '30%') + ', transparent)')
+        document.documentElement.style.setProperty('--halo-search-widget-hit-bg-color', 'color-mix(in srgb, ' + colors.background + ' 88%, ' + (isDark ? 'black' : colors.primary) + ')')
+        document.documentElement.style.setProperty('--halo-search-widget-divider-color', 'color-mix(in srgb, ' + colors.secondary + ' 15%, transparent)')
+        document.documentElement.style.setProperty('--halo-search-widget-kbd-border-color', 'color-mix(in srgb, ' + colors.secondary + ' 25%, transparent)')
+      }
       var saved = localStorage.getItem('theme')
       var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       var isDark
@@ -36,9 +123,10 @@
       }
       if (isDark) {
         document.documentElement.classList.add('dark')
-        var meta = document.querySelector('meta[name="theme-color"]')
-        if (meta) meta.setAttribute('content', 'oklch(22% 0.005 298)')
       }
+      applyCustomPalette(isDark)
+      var meta = document.querySelector('meta[name="theme-color"]')
+      if (meta) meta.setAttribute('content', isDark ? (customColors ? palette.dark.background : 'oklch(22% 0.005 298)') : (customColors ? palette.light.background : 'oklch(96% 0.005 298)'))
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.documentElement.classList.add('reduce-motion')
       }
@@ -57,6 +145,21 @@
       "colorMode": [[${theme.config.general.color_mode ?: 'system'}]],
       "fontStyle": [[${theme.config.general.font_style ?: 'sans'}]],
       "enableTransition": [[${theme.config.advanced.enable_transition ?: true}]],
+      "customColors": {
+        "enabled": [[${customColorsEnabled}]],
+        "light": {
+          "primary": [[${lightPrimary}]],
+          "secondary": [[${lightSecondary}]],
+          "background": [[${lightBackground}]],
+          "highlight": [[${lightHighlight}]]
+        },
+        "dark": {
+          "primary": [[${darkPrimary}]],
+          "secondary": [[${darkSecondary}]],
+          "background": [[${darkBackground}]],
+          "highlight": [[${darkHighlight}]]
+        }
+      },
       "customCss": [[${theme.config.advanced.custom_css ?: ''}]]
     }
   </script>

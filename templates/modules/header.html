@@ -31,7 +31,7 @@
     </th:block>
 
     <!-- Subtitle -->
-    <th:block th:if="${not #strings.isEmpty(site.subtitle)}">
+    <th:block th:if="${sidebarShowSubtitle and not #strings.isEmpty(site.subtitle)}">
       <th:block th:if="${isPostPage}">
         <div
           class="text-3.5 c-secondary font-navbar lg:text-4 op-0 lg:op-100"

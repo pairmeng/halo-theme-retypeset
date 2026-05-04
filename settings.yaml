@@ -87,6 +87,140 @@ spec:
           value: ""
           help: 填写后将在页脚展示，留空则不展示
 
+    - group: appearance
+      label: 外观配色
+      formSchema:
+        - $formkit: checkbox
+          name: enable_custom_colors
+          label: 启用自定义颜色
+          value: false
+          help: 开启后将覆盖主题内置的浅色和深色配色
+
+        - $formkit: color
+          name: light_primary
+          label: 浅色主文字色
+          value: "#403d42"
+        - $formkit: color
+          name: light_secondary
+          label: 浅色次文字色
+          value: "#625d66"
+        - $formkit: color
+          name: light_background
+          label: 浅色背景色
+          value: "#f5f3f6"
+        - $formkit: color
+          name: light_highlight
+          label: 浅色标记色
+          value: "#f5d94f"
+
+        - $formkit: color
+          name: dark_primary
+          label: 深色主文字色
+          value: "#ece9ef"
+        - $formkit: color
+          name: dark_secondary
+          label: 深色次文字色
+          value: "#c2bdc6"
+        - $formkit: color
+          name: dark_background
+          label: 深色背景色
+          value: "#302d33"
+        - $formkit: color
+          name: dark_highlight
+          label: 深色标记色
+          value: "#f5d94f"
+
+    - group: sidebar
+      label: 侧边栏
+      formSchema:
+        - $formkit: checkbox
+          name: show_site_header
+          label: 显示站点标题
+          value: true
+        - $formkit: checkbox
+          name: show_site_subtitle
+          label: 显示站点副标题
+          value: true
+        - $formkit: select
+          name: navigation_mode
+          label: 导航链接
+          value: default
+          options:
+            - label: 默认导航
+              value: default
+            - label: 自定义导航
+              value: custom
+            - label: 默认 + 自定义
+              value: combined
+            - label: 关闭导航
+              value: "off"
+        - $formkit: array
+          name: custom_links
+          label: 自定义导航链接
+          value: []
+          addLabel: 添加链接
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: checkbox
+              name: enabled
+              label: 启用
+              value: true
+            - $formkit: text
+              name: name
+              label: 名称
+              value: ""
+            - $formkit: text
+              name: url
+              label: 链接
+              value: ""
+            - $formkit: checkbox
+              name: new_window
+              label: 新窗口打开
+              value: false
+        - $formkit: checkbox
+          name: show_footer
+          label: 显示侧边栏底部
+          value: true
+        - $formkit: checkbox
+          name: show_social_links
+          label: 显示社交链接
+          value: true
+        - $formkit: checkbox
+          name: show_copyright
+          label: 显示版权信息
+          value: true
+        - $formkit: checkbox
+          name: show_icp
+          label: 显示 ICP 备案号
+          value: true
+        - $formkit: checkbox
+          name: show_powered_by
+          label: 显示 Powered by
+          value: true
+
+    - group: social
+      label: 社交链接
+      formSchema:
+        - $formkit: array
+          name: social_links
+          label: 社交链接
+          value: []
+          addLabel: 添加社交链接
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: text
+              name: name
+              label: 名称
+              value: ""
+            - $formkit: text
+              name: url
+              label: 链接
+              value: ""
+
     - group: advanced
       label: 高级设置
       formSchema:

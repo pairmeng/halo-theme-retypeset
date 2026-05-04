@@ -24,6 +24,8 @@ This project is a **Halo theme adaptation** of the original [Retypeset](https://
 ## Features
 
 - Light / Dark mode with system preference detection
+- Custom light and dark color settings
+- Configurable sidebar navigation and footer sections
 - Elegant page transition animations with element morphing
 - Optimized CJK typography via [heti](https://github.com/sivan/heti)
 - Table of Contents generation
@@ -72,3 +74,4 @@ This project is licensed under the [MIT License](./LICENSE).
 
 Original theme Copyright (c) 2025 [radishzz](https://github.com/radishzzz).
 Halo adaptation Copyright (c) 2025 [picsky](https://github.com/picsky).
+Secondary development Copyright (c) 2026 paimon.

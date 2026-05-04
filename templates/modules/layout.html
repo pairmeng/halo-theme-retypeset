@@ -16,6 +16,14 @@
     t_moments=${lang == 'en' ? 'Moments' : '瞬间'},
     t_search=${lang == 'en' ? 'Search' : '搜索'},
     t_site_nav=${lang == 'en' ? 'Site Navigation' : '站点导航'},
+    sidebarShowHeader=${theme.config.sidebar == null or theme.config.sidebar.show_site_header != false},
+    sidebarShowSubtitle=${theme.config.sidebar == null or theme.config.sidebar.show_site_subtitle != false},
+    sidebarNavigationMode=${theme.config.sidebar != null ? (theme.config.sidebar.navigation_mode ?: 'default') : 'default'},
+    sidebarShowFooter=${theme.config.sidebar == null or theme.config.sidebar.show_footer != false},
+    sidebarShowSocialLinks=${theme.config.sidebar == null or theme.config.sidebar.show_social_links != false},
+    sidebarShowCopyright=${theme.config.sidebar == null or theme.config.sidebar.show_copyright != false},
+    sidebarShowIcp=${theme.config.sidebar == null or theme.config.sidebar.show_icp != false},
+    sidebarShowPoweredBy=${theme.config.sidebar == null or theme.config.sidebar.show_powered_by != false},
     useLogoImage=${theme.config.general.logo_type == 'image' and not #strings.isEmpty(site.logo)},
     hasMomentsPlugin=${pluginFinder.available('PluginMoments')}
   "
@@ -39,10 +47,10 @@
       lg="my-20 max-w-[min(calc(75vw-16rem),44rem)] min-h-full p-0"
     >
       <!-- Header -->
-      <th:block th:replace="~{modules/header :: header(isPostPage = ${isPostPage})}" />
+      <th:block th:if="${sidebarShowHeader}" th:replace="~{modules/header :: header(isPostPage = ${isPostPage})}" />
 
       <!-- Navbar -->
-      <th:block th:replace="~{modules/navbar :: navbar(isPostPage = ${isPostPage})}" />
+      <th:block th:if="${sidebarNavigationMode != 'off'}" th:replace="~{modules/navbar :: navbar(isPostPage = ${isPostPage})}" />
 
       <!-- Main Content -->
       <main th:classappend="${isPostPage ? 'mb-10' : 'mb-12'}">
@@ -50,7 +58,7 @@
       </main>
 
       <!-- Footer -->
-      <th:block th:replace="~{modules/footer}" />
+      <th:block th:if="${sidebarShowFooter}" th:replace="~{modules/footer}" />
     </div>
 
     <!-- Button (Theme Toggle) -->

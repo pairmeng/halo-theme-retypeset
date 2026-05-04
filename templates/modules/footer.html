@@ -4,7 +4,7 @@
     lg="uno-desktop-column bottom-20 text-3.5"
   >
     <!-- Social Links -->
-    <p th:if="${theme.config.social != null && theme.config.social.social_links != null && !theme.config.social.social_links.isEmpty()}">
+    <p th:if="${sidebarShowSocialLinks and theme.config.social != null && theme.config.social.social_links != null && !theme.config.social.social_links.isEmpty()}">
       <th:block th:each="link, stat : ${theme.config.social.social_links}">
         <a
           th:href="${link.url}"
@@ -18,18 +18,18 @@
     </p>
 
     <!-- Copyright -->
-    <p>
+    <p th:if="${sidebarShowCopyright}">
       © <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
       <span th:text="${site.title}"></span>
     </p>
 
     <!-- ICP -->
-    <p th:if="${!#strings.isEmpty(theme.config.general.icp_number)}">
+    <p th:if="${sidebarShowIcp and !#strings.isEmpty(theme.config.general.icp_number)}">
       <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" th:text="${theme.config.general.icp_number}"></a>
     </p>
 
     <!-- Powered by -->
-    <p>
+    <p th:if="${sidebarShowPoweredBy}">
       Powered by <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" href="https://www.halo.run/" target="_blank" rel="noopener noreferrer">Halo</a> and <a class="highlight-hover py-0.8 transition-colors after:bottom-0.35em hover:c-primary" href="https://github.com/picsky/halo-theme-retypeset" target="_blank" rel="noopener noreferrer">Retypeset</a>
     </p>
 

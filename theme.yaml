@@ -5,7 +5,7 @@ metadata:
 spec:
   displayName: 重新编排
   author:
-    name: shunkang & radishzz
+    name: paimon
     website: https://github.com/picsky/halo-theme-retypeset
   description: 专注排版的博客主题，移植自 astro-theme-retypeset。以纸质书般的阅读体验，重新唤醒排版之美。
   logo: /themes/theme-retypeset/assets/images/logo.svg
