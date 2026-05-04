@@ -231,26 +231,28 @@ ul.toc-sub-group li {
 
 /* Layout direction (CSS custom properties) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 :root {
-  --layout-content-width: min(calc(75vw - 16rem), 44rem);
+  --layout-content-base-width: min(calc(75vw - 16rem), 44rem);
+  --layout-content-max-width: 52rem;
+  --layout-content-target-width: min(calc(75vw - 16rem), var(--layout-content-max-width));
   --layout-sidebar-width: 14rem;
   --layout-toc-width: 0rem;
   --layout-toc-gap: 0rem;
   --layout-min-edge-gutter: 5rem;
   --layout-sidebar-gap: 11.25rem;
-  --layout-sidebar-gap-safe: max(
+  --layout-sidebar-gap-anchor: max(
     1rem,
     min(
       var(--layout-sidebar-gap),
       calc(
-        100vw - var(--layout-content-width) - var(--layout-sidebar-width) -
+        100vw - var(--layout-content-base-width) - var(--layout-sidebar-width) -
           var(--layout-toc-width) - var(--layout-toc-gap) -
           var(--layout-min-edge-gutter) - var(--layout-min-edge-gutter)
       )
     )
   );
   --layout-group-width: calc(
-    var(--layout-toc-width) + var(--layout-toc-gap) + var(--layout-content-width) +
-      var(--layout-sidebar-gap-safe) + var(--layout-sidebar-width)
+    var(--layout-toc-width) + var(--layout-toc-gap) + var(--layout-content-base-width) +
+      var(--layout-sidebar-gap-anchor) + var(--layout-sidebar-width)
   );
   --layout-group-gutter: max(
     var(--layout-min-edge-gutter),
@@ -260,6 +262,23 @@ ul.toc-sub-group li {
   --layout-toc-right: auto;
   --layout-content-ml: calc(var(--layout-group-gutter) + var(--layout-toc-width) + var(--layout-toc-gap));
   --layout-content-mr: auto;
+  --layout-content-width: min(
+    var(--layout-content-target-width),
+    calc(
+      100vw - var(--layout-content-ml) - var(--layout-sidebar-width) -
+        1rem - var(--layout-min-edge-gutter)
+    )
+  );
+  --layout-sidebar-gap-safe: max(
+    1rem,
+    min(
+      var(--layout-sidebar-gap),
+      calc(
+        100vw - var(--layout-content-ml) - var(--layout-content-width) -
+          var(--layout-sidebar-width) - var(--layout-min-edge-gutter)
+      )
+    )
+  );
   --layout-sidebar-left: calc(
     var(--layout-content-ml) + var(--layout-content-width) + var(--layout-sidebar-gap-safe)
   );
@@ -268,15 +287,31 @@ ul.toc-sub-group li {
   --layout-btn-right: auto;
 }
 [data-layout="left"] {
-  --layout-sidebar-left: var(--layout-group-gutter);
-  --layout-sidebar-right: auto;
-  --layout-content-ml: calc(
-    var(--layout-group-gutter) + var(--layout-sidebar-width) + var(--layout-sidebar-gap-safe)
+  --layout-toc-left: calc(
+    var(--layout-group-gutter) + var(--layout-sidebar-width) +
+      var(--layout-sidebar-gap-anchor) + var(--layout-content-base-width) +
+      var(--layout-toc-gap)
   );
+  --layout-content-width: min(
+    var(--layout-content-target-width),
+    calc(
+      var(--layout-toc-left) - var(--layout-toc-gap) - var(--layout-sidebar-width) -
+        1rem - var(--layout-min-edge-gutter)
+    )
+  );
+  --layout-content-ml: calc(var(--layout-toc-left) - var(--layout-toc-gap) - var(--layout-content-width));
+  --layout-sidebar-gap-safe: max(
+    1rem,
+    min(
+      var(--layout-sidebar-gap),
+      calc(var(--layout-content-ml) - var(--layout-sidebar-width) - var(--layout-min-edge-gutter))
+    )
+  );
+  --layout-sidebar-left: calc(var(--layout-content-ml) - var(--layout-sidebar-gap-safe) - var(--layout-sidebar-width));
+  --layout-sidebar-right: auto;
   --layout-content-mr: auto;
   --layout-btn-left: var(--layout-sidebar-left);
   --layout-btn-right: auto;
-  --layout-toc-left: calc(var(--layout-content-ml) + var(--layout-content-width) + var(--layout-toc-gap));
   --layout-toc-right: auto;
 }
 @media (min-width: 1024px) {

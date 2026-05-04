@@ -25,6 +25,7 @@
     sidebarShowCopyright=${theme.config.sidebar == null or theme.config.sidebar.show_copyright != false},
     sidebarShowIcp=${theme.config.sidebar == null or theme.config.sidebar.show_icp != false},
     sidebarShowPoweredBy=${theme.config.sidebar == null or theme.config.sidebar.show_powered_by != false},
+    contentMaxWidth=${theme.config.general.content_max_width != null ? theme.config.general.content_max_width : 52},
     sidebarDesktopOffset=${theme.config.sidebar?.desktop_offset != null ? theme.config.sidebar.desktop_offset : 11.25},
     useLogoImage=${theme.config.general.logo_type == 'image' and not #strings.isEmpty(site.logo)},
     hasMomentsPlugin=${pluginFinder.available('PluginMoments')}
@@ -32,7 +33,7 @@
   th:lang="${lang == 'en' ? 'en' : 'zh-CN'}"
   th:fragment="html (title, content, head, footer, sidebar, contentClass, isPostPage)"
   th:attr="data-layout=${layoutDirection}"
-  th:style="${'--layout-sidebar-gap:' + sidebarDesktopOffset + 'rem'}"
+  th:style="${'--layout-sidebar-gap:' + sidebarDesktopOffset + 'rem;--layout-content-max-width:' + contentMaxWidth + 'rem'}"
   th:classappend="${(theme.config.general.font_style == 'serif' ? 'font-serif' : 'font-sans') + (isPostPage ? ' scroll-smooth' : '')}"
 >
   <head>
@@ -47,7 +48,7 @@
     <div
       class="content-wrapper mx-auto max-w-205.848 min-h-vh w-full min-h-dvh"
       p="x-[min(7.25vw,3.731rem)] y-10"
-      lg="my-20 max-w-[min(calc(75vw-16rem),44rem)] min-h-full p-0"
+      lg="my-20 max-w-[var(--layout-content-width)] min-h-full p-0"
     >
       <!-- Header -->
       <th:block th:if="${sidebarShowHeader}" th:replace="~{modules/header :: header(isPostPage = ${isPostPage})}" />

@@ -57,6 +57,15 @@ spec:
             - label: 左侧
               value: left
 
+        - $formkit: number
+          name: content_max_width
+          label: 正文最大宽度
+          value: 52
+          min: 44
+          max: 64
+          step: 0.5
+          help: 控制桌面端正文最大宽度，单位 rem；目录仍按原位置计算
+
         - $formkit: select
           name: toc_desktop_mode
           label: 桌面端目录模式
