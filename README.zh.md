@@ -34,7 +34,7 @@
 
 ## 安装
 
-1. 从 [Releases](https://github.com/picsky/halo-theme-retypeset/releases) 页面下载最新版本。
+1. 从 [Releases](https://github.com/pairmeng/halo-theme-retypeset/releases) 页面下载最新版本。
 2. 进入 Halo 管理后台 → **外观** → **主题** → **安装**。
 3. 上传 `.zip` 文件并启用主题。
 
@@ -42,7 +42,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/picsky/halo-theme-retypeset.git
+git clone https://github.com/pairmeng/halo-theme-retypeset.git
 
 # 进入项目目录
 cd halo-theme-retypeset
@@ -55,6 +55,8 @@ pnpm build
 ```
 
 构建完成后，主题包位于 `dist/theme-retypeset-*.zip`。
+
+更完整的代码结构、构建发布流程和当前布局问题记录见 [开发文档](./docs/development.md)。
 
 ## 致谢
 
@@ -72,4 +74,4 @@ pnpm build
 
 原主题版权所有 (c) 2025 [radishzz](https://github.com/radishzzz)。
 Halo 移植版版权所有 (c) 2025 [picsky](https://github.com/picsky)。
-二次开发版权所有 (c) 2026 paimon。
+当前主题维护与二次开发版权所有 (c) 2026 paimon。

@@ -36,7 +36,7 @@ This project is a **Halo theme adaptation** of the original [Retypeset](https://
 
 ## Installation
 
-1. Download the latest release from [Releases](https://github.com/picsky/halo-theme-retypeset/releases) page.
+1. Download the latest release from [Releases](https://github.com/pairmeng/halo-theme-retypeset/releases) page.
 2. Go to your Halo admin panel → **Appearance** → **Themes** → **Install**.
 3. Upload the `.zip` file and activate the theme.
 
@@ -44,7 +44,7 @@ This project is a **Halo theme adaptation** of the original [Retypeset](https://
 
 ```bash
 # Clone the repository
-git clone https://github.com/picsky/halo-theme-retypeset.git
+git clone https://github.com/pairmeng/halo-theme-retypeset.git
 
 # Navigate to the project directory
 cd halo-theme-retypeset
@@ -57,6 +57,8 @@ pnpm build
 ```
 
 The built theme package will be at `dist/theme-retypeset-*.zip`.
+
+For the current code structure, build/release workflow, and layout issue notes, see [Development Notes](./docs/development.md).
 
 ## Credits
 
@@ -74,4 +76,4 @@ This project is licensed under the [MIT License](./LICENSE).
 
 Original theme Copyright (c) 2025 [radishzz](https://github.com/radishzzz).
 Halo adaptation Copyright (c) 2025 [picsky](https://github.com/picsky).
-Secondary development Copyright (c) 2026 paimon.
+Current theme maintenance and secondary development Copyright (c) 2026 paimon.

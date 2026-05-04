@@ -6,16 +6,16 @@ spec:
   displayName: 重新编排
   author:
     name: paimon
-    website: https://github.com/picsky/halo-theme-retypeset
+    website: https://github.com/pairmeng
   description: 专注排版的博客主题，移植自 astro-theme-retypeset。以纸质书般的阅读体验，重新唤醒排版之美。
   logo: /themes/theme-retypeset/assets/images/logo.svg
-  homepage: https://github.com/picsky/halo-theme-retypeset
-  repo: https://github.com/picsky/halo-theme-retypeset.git
-  issues: https://github.com/picsky/halo-theme-retypeset/issues
+  homepage: https://github.com/pairmeng/halo-theme-retypeset
+  repo: https://github.com/pairmeng/halo-theme-retypeset.git
+  issues: https://github.com/pairmeng/halo-theme-retypeset/issues
   settingName: "theme-retypeset-setting"
   configMapName: "theme-retypeset-configMap"
   version: 1.0.5
   requires: ">=2.21.0"
   license:
     - name: "MIT"
-      url: "https://github.com/picsky/halo-theme-retypeset/blob/master/LICENSE"
+      url: "https://github.com/pairmeng/halo-theme-retypeset/blob/main/LICENSE"
